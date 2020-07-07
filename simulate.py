@@ -2,9 +2,11 @@ import argparse
 import json
 import os
 import sys
-
-
+from time import strftime
+from copy import deepcopy
+import numpy as np
 from flow.core.util import ensure_dir
+from flow.core.experiment import Experiment
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
 from flow.utils.registry import make_create_env
@@ -17,44 +19,49 @@ def parse_args(args):
     argparse.Namespace
         the output parser object
     """
+    # parser = argparse.ArgumentParser(
+    #     formatter_class=argparse.RawDescriptionHelpFormatter,
+    #     description="Parse argument used when running a Flow simulation.",
+    #     epilog="python simulate.py EXP_CONFIG")
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="Parse argument used when running a Flow simulation.",
-        epilog="python train.py EXP_CONFIG")
-
+        epilog="python simulate.py EXP_CONFIG --num_runs INT --no_render")
     # required input parameters
     parser.add_argument(
         'exp_config', type=str,
-        )#Name of the experiment configuration file, as located in 
-         #exp_configs/non_rl exp_configs/rl/singleagent or exp_configs/rl/multiagent.'
+    )  # Name of the experiment configuration file, as located in
+    # exp_configs/non_rl exp_configs/rl/singleagent or exp_configs/rl/multiagent.'
 
-    # optional input parameters
+    # optional input parameters (for RL parser)
     parser.add_argument(
         '--rl_trainer', type=str, default="stable-baselines",
-        )# the RL trainer to use. either  or Stable-Baselines
+    )  # the RL trainer to use. either  or Stable-Baselines
     parser.add_argument(
         '--num_cpus', type=int, default=1,
-        )#How many CPUs to use
+    )  # How many CPUs to use
     parser.add_argument(
         '--num_steps', type=int, default=5000,
-        )#How many total steps to perform learning over
+    )  # How many total steps to perform learning over
     parser.add_argument(
         '--rollout_size', type=int, default=1000,
-        )#How many steps are in a training batch.
+    )  # How many steps are in a training batch.
     parser.add_argument(
         '--checkpoint_path', type=str, default=None,
-        )#Directory with checkpoint to restore training from.
+    )  # Directory with checkpoint to restore training from.
+
+    # for non-RL parser
     parser.add_argument(
         '--gen_emission',
         action='store_true',
-        )#Specifies whether to generate an emission file from the simulation.
+    )  # Specifies whether to generate an emission file from the simulation.
     parser.add_argument(
         '--num_runs', type=int, default=1,
-        )#Number of simulations to run. Defaults to 1.
+    )  # Number of simulations to run. Defaults to 1.
     parser.add_argument(
         '--no_render',
         action='store_true',
-        )#Specifies whether to run the simulation during runtime.
+    )  # Specifies whether to run the simulation during runtime.
     return parser.parse_known_args(args)[0]
 
 
@@ -62,7 +69,7 @@ def run_model_stablebaseline(flow_params,
                              num_cpus=1,
                              rollout_size=50,
                              num_steps=50):
-    
+
     from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
     from stable_baselines import DDPG
     from stable_baselines.deepq.policies import MlpPolicy
@@ -128,6 +135,7 @@ def train_stable_baselines(submodule, flags):
         obs, rewards, dones, info = eval_env.step(action)
         reward += rewards
     print('the final reward is {}'.format(reward))
+
 
 def setup_exps_rllib(flow_params,
                      n_cpus,
@@ -217,21 +225,16 @@ def train_rllib(submodule, flags):
         exp_config['restore'] = flags.checkpoint_path
     run_experiments({flow_params["exp_tag"]: exp_config})
 
-def simulate_without_rl(flags,modules):
-    flow_params=getattr(module, flags.exp_config).flow_params
-    
+
+def simulate_without_rl(flags, module):
+    flow_params = getattr(module, flags.exp_config).flow_params
+
     if hasattr(getattr(module, flags.exp_config), "custom_callables"):
         callables = getattr(module, flags.exp_config).custom_callables
     else:
         callables = None
-     flow_params['sim'].render = not flags.no_render
-    flow_params['simulator'] = 'aimsun' if flags.aimsun else 'traci'
-
-    # If Aimsun is being called, replace SumoParams with AimsunParams.
-    if flags.aimsun:
-        sim_params = AimsunParams()
-        sim_params.__dict__.update(flow_params['sim'].__dict__)
-        flow_params['sim'] = sim_params
+    flow_params['sim'].render = not flags.no_render
+    flow_params['simulator'] = 'traci'
 
     # Specify an emission path if they are meant to be generated.
     if flags.gen_emission:
@@ -249,7 +252,7 @@ def simulate_without_rl(flags,modules):
 
     # Run for the specified number of rollouts.
     exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
-    
+
 
 def main(args):
     """Perform the training operations."""
@@ -263,15 +266,13 @@ def main(args):
         "exp_configs.rl.multiagent", fromlist=[flags.exp_config])
     module_nonrl = __import__(
         "exp_configs.non_rl", fromlist=[flags.exp_config])
-    )
+
     # Import the sub-module containing the specified exp_config and determine
     # whether the environment is single agent or multi-agent.
     if hasattr(module_nonrl, flags.exp_config):
-        simulate_without_rl(flags,module_nonrl)
+        simulate_without_rl(flags, module_nonrl)
         return
-    import numpy as np
-    from time import strftime
-    from copy import deepcopy
+
     if hasattr(module, flags.exp_config):
         submodule = getattr(module, flags.exp_config)
         multiagent = False
