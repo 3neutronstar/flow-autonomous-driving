@@ -37,7 +37,7 @@ additional_net_params = ADDITIONAL_NET_PARAMS.copy()
 net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
-    exp_tag='singleagent_test',
+    exp_tag='test',
     env_name=AccelEnv,
     network=myNetwork,
     simulator='traci',
