@@ -60,47 +60,47 @@ class RingNetwork_custom(RingNetwork_custom):
 
         return edges
 
-    # def specify_routes(self, net_params):
-    #     rts = {"e_0_1": ["e_0_1", "e_1_2", "e_2_3", "e_3_0"],
-    #            "e_1_2": ["e_1_2", "e_2_3", "e_3_0", "e_0_1"],
-    #            "e_2_3": ["e_2_3", "e_3_0", "e_0_1", "e_1_2"],
-    #            "e_3_0": ["e_3_0", "e_0_1", "e_1_2", "e_2_3"]}
-
-    #     return rts
-
     def specify_routes(self, net_params):
-        damg = np.array([[0, 1, 0, 0],
-                         [0, 0, 1, 0],
-                         [0, 0, 0, 1],
-                         [1, 0, 0, 0]])
-        damg_rows = damg.shape[0]
-        damg_cols = damg.shape[1]
+        rts = {"e_0_1": ["e_0_1", "e_1_2", "e_2_3", "e_3_0"],
+               "e_1_2": ["e_1_2", "e_2_3", "e_3_0", "e_0_1"],
+               "e_2_3": ["e_2_3", "e_3_0", "e_0_1", "e_1_2"],
+               "e_3_0": ["e_3_0", "e_0_1", "e_1_2", "e_2_3"]}
 
-        route = np.zeros((damg_rows, damg_cols), dtype=object)
-
-        for n_rows in range(0, damg_cols):
-            for n_cols in range(0, damg_cols):
-                if(damg[n_rows][n_cols] > 0):
-                    q = queue.Queue(damg_cols)
-                    route[n_rows][n_cols] = q
-                    route[n_rows][n_cols].put(
-                        str("e_"+str(n_rows)+"_"+str(n_cols)))
-
-        rts = {}
-        sum_row = 0
-        for n_rows in range(0, damg_rows):
-            for n_cols in range(0, damg_cols):
-                sum_row += damg[n_rows][n_cols]
-                if n_rows != n_cols:
-                    route_array = []
-                    if route[n_rows][n_cols] != 0:
-                        # while route[n_rows][n_cols].empty() or route[n_rows][n_cols] != 0:
-                        while route[n_rows][n_cols].qsize():
-                            route_array.append(
-                                route[n_rows][n_cols].get_nowait())
-                    start_edge = str("e_"+str(n_rows)+"_"+str(n_cols))
-
-                    rts[start_edge] = [(route_array)]
-                else:
-                    continue
         return rts
+
+    # def specify_routes(self, net_params):
+    #     damg = np.array([[0, 1, 0, 0],
+    #                      [0, 0, 1, 0],
+    #                      [0, 0, 0, 1],
+    #                      [1, 0, 0, 0]])
+    #     damg_rows = damg.shape[0]
+    #     damg_cols = damg.shape[1]
+
+    #     route = np.zeros((damg_rows, damg_cols), dtype=object)
+
+    #     for n_rows in range(0, damg_cols):
+    #         for n_cols in range(0, damg_cols):
+    #             if(damg[n_rows][n_cols] > 0):
+    #                 q = queue.Queue(damg_cols)
+    #                 route[n_rows][n_cols] = q
+    #                 route[n_rows][n_cols].put(
+    #                     str("e_"+str(n_rows)+"_"+str(n_cols)))
+
+    #     rts = {}
+    #     sum_row = 0
+    #     for n_rows in range(0, damg_rows):
+    #         for n_cols in range(0, damg_cols):
+    #             sum_row += damg[n_rows][n_cols]
+    #             if n_rows != n_cols:
+    #                 route_array = []
+    #                 if route[n_rows][n_cols] != 0:
+    #                     # while route[n_rows][n_cols].empty() or route[n_rows][n_cols] != 0:
+    #                     while route[n_rows][n_cols].qsize():
+    #                         route_array.append(
+    #                             route[n_rows][n_cols].get_nowait())
+    #                 start_edge = str("e_"+str(n_rows)+"_"+str(n_cols))
+
+    #                 rts[start_edge] = [(route_array)]
+    #             else:
+    #                 continue
+    #     return rts
