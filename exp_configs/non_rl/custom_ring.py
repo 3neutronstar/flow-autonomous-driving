@@ -26,7 +26,7 @@ net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
     # name of the experiment
-    exp_tag='ring_intest',
+    exp_tag='custom_ring',
     # name of the flow environment the experiment is running on
     env_name=AccelEnv,
     # name of the network class the experiment is running on
