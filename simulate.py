@@ -5,11 +5,12 @@ import sys
 from time import strftime
 from copy import deepcopy
 import numpy as np
+
 from flow.core.util import ensure_dir
-from flow.core.experiment import Experiment
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
 from flow.utils.registry import make_create_env
+from flow.core.experiment import Experiment
 
 
 def parse_args(args):
@@ -26,7 +27,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="Parse argument used when running a Flow simulation.",
-        epilog="python simulate.py EXP_CONFIG --num_runs INT --no_render")
+        epilog="python simulate.py EXP_CONFIG")
     # required input parameters
     parser.add_argument(
         'exp_config', type=str,
@@ -246,7 +247,7 @@ def simulate_without_rl(flags, module):
         with open(os.path.join(dir_, "{}.json".format(fp_)), 'w') as outfile:
             json.dump(flow_params, outfile,
                       cls=FlowParamsEncoder, sort_keys=True, indent=4)
-
+    flow_params['env'].horizon = 1500
     # Create the experiment object.
     exp = Experiment(flow_params, callables)
 
@@ -269,10 +270,12 @@ def main(args):
 
     # Import the sub-module containing the specified exp_config and determine
     # whether the environment is single agent or multi-agent.
+    # non_rl part
     if hasattr(module_nonrl, flags.exp_config):
+
         simulate_without_rl(flags, module_nonrl)
         return
-
+    # rl part
     if hasattr(module, flags.exp_config):
         submodule = getattr(module, flags.exp_config)
         multiagent = False
