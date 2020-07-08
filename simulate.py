@@ -5,7 +5,7 @@ import sys
 from time import strftime
 from copy import deepcopy
 import numpy as np
-import torch as th
+
 
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
@@ -288,6 +288,7 @@ def train_stable_baselines3(submodule, flags):
     """Train policies using the PPO algorithm in stable-baselines3."""
     from stable_baselines3.common.vec_env import DummyVecEnv
     from stable_baselines3 import PPO
+    import torch as th
     flow_params = submodule.flow_params
     # Path to the saved files
     exp_tag = flow_params['exp_tag']

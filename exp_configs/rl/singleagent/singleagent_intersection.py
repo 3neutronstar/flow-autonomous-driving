@@ -22,7 +22,7 @@ vehicles.add(
         min_gap=0
     ),
     routing_controller=(ContinuousRouter, {}),
-    num_vehicles=10)
+    num_vehicles=16)
 vehicles.add(
     veh_id="rl",
     acceleration_controller=(RLController, {}),
