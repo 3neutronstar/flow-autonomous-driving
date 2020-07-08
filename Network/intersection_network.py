@@ -1,11 +1,11 @@
 from flow.networks import Network
 
 
-class myNetwork(Network):
+class IntersectionNetwork(Network):
     pass
 
 
-class myNetwork(myNetwork):  # update my network class
+class IntersectionNetwork(IntersectionNetwork):  # update my network class
 
     def specify_nodes(self, net_params):
         # one of the elements net_params will need is a "radius" value

@@ -1,8 +1,3 @@
-"""Used as an example of ring experiment.
-
-This example consists of 22 IDM cars on a ring creating shockwaves.
-"""
-
 from flow.controllers import IDMController, ContinuousRouter
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.core.params import VehicleParams
@@ -11,7 +6,7 @@ from flow.networks.ring import RingNetwork, ADDITIONAL_NET_PARAMS
 from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
-from Network.Custom_Network import myNetwork
+from Network.intersection_network import IntersectionNetwork
 
 
 ADDITIONAL_NET_PARAMS = {
