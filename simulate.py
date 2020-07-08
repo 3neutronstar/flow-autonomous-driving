@@ -270,6 +270,7 @@ def run_model_stablebaseline3(flow_params,
                               num_steps=5):
     from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
     from stable_baselines3 import PPO
+    from stable_baselines3.ppo import MlpPolicy
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
         # The algorithms require a vectorized environment to run
@@ -278,7 +279,7 @@ def run_model_stablebaseline3(flow_params,
         env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
                              for i in range(num_cpus)])
 
-    train_model = PPO(policy='MlpPolicy', env=env, verbose=1)
+    train_model = PPO(MlpPolicy, env=env, verbose=1)
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
@@ -312,7 +313,7 @@ def train_stable_baselines3(submodule, flags):
 
     # Replay the result by loading the model
     print('Loading the trained model and testing it out!')
-    model = PPO.load(save_path)
+    model.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
     env = env_constructor(params=flow_params, version=0)()
