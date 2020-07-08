@@ -5,6 +5,7 @@ import sys
 from time import strftime
 from copy import deepcopy
 import numpy as np
+import torch as th
 
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
@@ -64,6 +65,8 @@ def parse_args(args):
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
     return parser.parse_known_args(args)[0]
+
+# stable-baseline
 
 
 def run_model_stablebaseline(flow_params,
@@ -136,6 +139,8 @@ def train_stable_baselines(submodule, flags):
         obs, rewards, dones, info = eval_env.step(action)
         reward += rewards
     print('the final reward is {}'.format(reward))
+
+# rllib
 
 
 def setup_exps_rllib(flow_params,
@@ -226,6 +231,8 @@ def train_rllib(submodule, flags):
         exp_config['restore'] = flags.checkpoint_path
     run_experiments({flow_params["exp_tag"]: exp_config})
 
+# simulate without rl
+
 
 def simulate_without_rl(flags, module):
     flow_params = getattr(module, flags.exp_config).flow_params
@@ -253,6 +260,72 @@ def simulate_without_rl(flags, module):
 
     # Run for the specified number of rollouts.
     exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
+
+# stablebaseline_ddpg
+
+
+def run_model_stablebaseline3(flow_params,
+                              num_cpus=1,
+                              rollout_size=5,
+                              num_steps=5):
+    from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
+    from stable_baselines3 import PPO
+    if num_cpus == 1:
+        constructor = env_constructor(params=flow_params, version=0)()
+        # The algorithms require a vectorized environment to run
+        env = DummyVecEnv([lambda: constructor])
+    else:
+        env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
+                             for i in range(num_cpus)])
+
+    train_model = PPO(policy='MlpPolicy', env=env, verbose=1)
+    train_model.learn(total_timesteps=num_steps)
+    return train_model
+
+
+def train_stable_baselines3(submodule, flags):
+    """Train policies using the PPO algorithm in stable-baselines3."""
+    from stable_baselines3.common.vec_env import DummyVecEnv
+    from stable_baselines3 import PPO
+    flow_params = submodule.flow_params
+    # Path to the saved files
+    exp_tag = flow_params['exp_tag']
+    result_name = '{}/{}'.format(exp_tag, strftime("%Y-%m-%d-%H:%M:%S"))
+
+    # Perform training.
+    print('Beginning training.')
+    model = run_model_stablebaseline(
+        flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
+
+    # Save the model to a desired folder and then delete it to demonstrate
+    # loading.
+    print('Saving the trained model!')
+    path = os.path.realpath(os.path.expanduser('~/baseline_results'))
+    ensure_dir(path)
+    save_path = os.path.join(path, result_name)
+    model.save(save_path)
+    # dump the flow params
+
+    with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
+        json.dump(flow_params, outfile,
+                  cls=FlowParamsEncoder, sort_keys=True, indent=4)
+
+    # Replay the result by loading the model
+    print('Loading the trained model and testing it out!')
+    model = PPO.load(save_path)
+    flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
+    flow_params['sim'].render = True
+    env = env_constructor(params=flow_params, version=0)()
+
+    # The algorithms require a vectorized environment to run
+    eval_env = DummyVecEnv([lambda: env])
+    obs = eval_env.reset()
+    reward = 0
+    for _ in range(flow_params['env'].horizon):
+        action, _states = model.predict(obs)
+        obs, rewards, dones, info = eval_env.step(action)
+        reward += rewards
+    print('the final reward is {}'.format(reward))
 
 
 def main(args):
@@ -294,8 +367,10 @@ def main(args):
         train_stable_baselines(submodule, flags)
     elif flags.rl_trainer.lower() == "rllib":
         train_rllib(submodule, flags)
+    elif flags.rl_trainer.lower() == "stable-baselines3":
+        train_stable_baselines3(submodule, flags)
     else:
-        raise ValueError("rl_trainer should be either 'rllib', 'h-baselines', "
+        raise ValueError("rl_trainer should be either 'rllib', 'stable-baselines3', "
                          "or 'stable-baselines'.")
 
 
