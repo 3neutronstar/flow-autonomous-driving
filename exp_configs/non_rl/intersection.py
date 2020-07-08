@@ -11,7 +11,7 @@ from Network.intersection_network import IntersectionNetwork
 
 
 ADDITIONAL_NET_PARAMS = {
-    "st_line": 40,
+    "length": 40,
     "num_lanes": 1,
     "speed_limit": 30,
 }

@@ -5,11 +5,18 @@ class IntersectionNetwork(Network):
     pass
 
 
+ADDITIONAL_NET_PARAMS = {
+    "length": 40,
+    "lanes": 1,
+    "speed_limit": 30,
+}
+
+
 class IntersectionNetwork(IntersectionNetwork):  # update my network class
 
     def specify_nodes(self, net_params):
         # one of the elements net_params will need is a "radius" value
-        r = net_params.additional_params["st_line"]
+        r = net_params.additional_params["length"]
 
         # specify the name and position (x,y) of each node
         nodes = [{"id": "LU", "x": -r,  "y": +r},  # 1
@@ -25,10 +32,10 @@ class IntersectionNetwork(IntersectionNetwork):  # update my network class
         return nodes
 
     def specify_edges(self, net_params):
-        r = net_params.additional_params["st_line"]
+        r = net_params.additional_params["length"]
         edgelen = r
         # this will let us control the number of lanes in the network
-        lanes = net_params.additional_params["num_lanes"]
+        lanes = net_params.additional_params["lanes"]
         # speed limit of vehicles in the network
         speed_limit = net_params.additional_params["speed_limit"]
         # L: left, R: right, U: Up D:Down

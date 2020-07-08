@@ -11,7 +11,7 @@ class RingNetwork_custom(Network):
 
 ADDITIONAL_NET_PARAMS = {
     "length": 40,
-    "num_lanes": 1,
+    "lanes": 1,
     "speed_limit": 30,
 }
 
