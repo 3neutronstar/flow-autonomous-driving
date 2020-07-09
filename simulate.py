@@ -271,6 +271,8 @@ def run_model_stablebaseline3(flow_params,
     from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
     from stable_baselines3 import PPO
     from stable_baselines3.ppo import MlpPolicy
+    import torch.nn as nn
+
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
         # The algorithms require a vectorized environment to run
@@ -289,7 +291,9 @@ def train_stable_baselines3(submodule, flags):
     """Train policies using the PPO algorithm in stable-baselines3."""
     from stable_baselines3.common.vec_env import DummyVecEnv
     from stable_baselines3 import PPO
-    import torch as th
+    import torch
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     start_time = timeit.default_timer()
     flow_params = submodule.flow_params
     # Path to the saved files
@@ -297,6 +301,7 @@ def train_stable_baselines3(submodule, flags):
     result_name = '{}/{}'.format(exp_tag, strftime("%Y-%m-%d-%H:%M:%S"))
 
     # Perform training.
+    print(torch.cuda.is_available())
     print('Beginning training.')
     model = run_model_stablebaseline3(
         flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
@@ -323,13 +328,13 @@ def train_stable_baselines3(submodule, flags):
     model.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
+    flow_params['env'].horizon = 1500  # 150초 동작
     env = env_constructor(params=flow_params, version=0)()
 
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
     obs = eval_env.reset()
     reward = 0
-    horizon = 1500  # 150초 동작
     for _ in range(flow_params['env'].horizon):
         action, _states = model.predict(obs)
         obs, rewards, dones, info = eval_env.step(action)
