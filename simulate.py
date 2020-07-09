@@ -6,7 +6,7 @@ from time import strftime
 from copy import deepcopy
 import numpy as np
 import timeit
-
+import torch
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
@@ -85,14 +85,13 @@ def setup_exps_rllib(flow_params,
         from ray.rllib.agents.agent import get_agent_class
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
-
     horizon = flow_params['env'].horizon
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
 
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-
+        config['framework'] = "torch"
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -105,7 +104,9 @@ def setup_exps_rllib(flow_params,
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
-        config = DEFAULT_CONFIG.copy()
+        agent_cls = get_agent_class(alg_run)
+        config = deepcopy(agent_cls._default_config)
+        config['framework'] = "torch"
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
