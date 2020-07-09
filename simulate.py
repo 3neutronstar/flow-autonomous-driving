@@ -46,10 +46,10 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(
-        '--num_steps', type=int, default=5000,
+        '--num_steps', type=int, default=500,
     )  # How many total steps to perform learning over
     parser.add_argument(
-        '--rollout_size', type=int, default=1000,
+        '--rollout_size', type=int, default=100,
     )  # How many steps are in a training batch.
     parser.add_argument(
         '--checkpoint_path', type=str, default=None,
@@ -77,7 +77,8 @@ def setup_exps_rllib(flow_params,
                      n_rollouts,
                      policy_graphs=None,
                      policy_mapping_fn=None,
-                     policies_to_train=None):
+                     policies_to_train=None,
+                     flags=None):
     from ray import tune
     from ray.tune.registry import register_env
     try:
@@ -86,22 +87,25 @@ def setup_exps_rllib(flow_params,
         from ray.rllib.agents.registry import get_agent_class
 
     horizon = flow_params['env'].horizon
+    if flags.algorithm.lower() == "ppo":
+        alg_run = "PPO"
 
-    alg_run = "PPO"
+        agent_cls = get_agent_class(alg_run)
+        config = deepcopy(agent_cls._default_config)
 
-    agent_cls = get_agent_class(alg_run)
-    config = deepcopy(agent_cls._default_config)
-
-    config["num_workers"] = n_cpus
-    config["train_batch_size"] = horizon * n_rollouts
-    config["gamma"] = 0.999  # discount rate
-    config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-    config["use_gae"] = True
-    config["lambda"] = 0.97
-    config["kl_target"] = 0.02
-    config["num_sgd_iter"] = 10
-    config["horizon"] = horizon
-
+        config["num_workers"] = n_cpus
+        config["train_batch_size"] = horizon * n_rollouts
+        config["gamma"] = 0.999  # discount rate
+        config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        config["use_gae"] = True
+        config["lambda"] = 0.97
+        config["kl_target"] = 0.02
+        config["num_sgd_iter"] = 10
+        config["horizon"] = horizon
+    elif flags.algorithm.lower() == "ddpg":
+        from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
+        alg_run = "DDPG"
+        config = DEFAULT_CONFIG.copy()
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -139,7 +143,7 @@ def train_rllib(submodule, flags):
 
     alg_run, gym_name, config = setup_exps_rllib(
         flow_params, n_cpus, n_rollouts,
-        policy_graphs, policy_mapping_fn, policies_to_train)
+        policy_graphs, policy_mapping_fn, policies_to_train, flags)
 
     ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
     exp_config = {
@@ -158,6 +162,7 @@ def train_rllib(submodule, flags):
 
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
+    # 학습끝나고 run experiment render하게 하기
     run_experiments({flow_params["exp_tag"]: exp_config})
 
 # simulate without rl
