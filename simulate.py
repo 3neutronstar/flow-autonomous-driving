@@ -311,7 +311,8 @@ def train_stable_baselines3(submodule, flags):
     # dump the flow params
     # check time for choose GPU and CPU
     stop_time = timeit.default_timer()
-    print(stop_time-start_time, "ms")
+    run_time = stop_time-start_time
+    print(stop_time-start_time, "s")
     print("--------------------------------------------------------")
     with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
         json.dump(flow_params, outfile,
@@ -323,11 +324,10 @@ def train_stable_baselines3(submodule, flags):
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
     env = env_constructor(params=flow_params, version=0)()
-    print("check1")
+
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
     obs = eval_env.reset()
-    print("check2")
     reward = 0
     horizon = 1500  # 150초 동작
     for _ in range(flow_params['env'].horizon):
@@ -335,6 +335,7 @@ def train_stable_baselines3(submodule, flags):
         obs, rewards, dones, info = eval_env.step(action)
         reward += rewards
     print('the final reward is {}'.format(reward))
+    print("total run_time:", run_time)
 
 
 def main(args):
