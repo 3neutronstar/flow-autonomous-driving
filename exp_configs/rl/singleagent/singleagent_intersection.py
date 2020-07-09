@@ -54,10 +54,10 @@ flow_params = dict(
     # environment related parameters (see flow.core.params.EnvParams)
     env=EnvParams(
         horizon=HORIZON,
-        warmup_steps=750,
+        warmup_steps=1500,  # after training, play time
         clip_actions=False,
         additional_params={
-            "max_accel": 1,
+            "max_accel": 3,
             "max_decel": 1,
             "target_velocity": 30,
             "sort_vehicles": False
