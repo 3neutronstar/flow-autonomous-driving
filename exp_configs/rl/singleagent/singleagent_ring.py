@@ -12,7 +12,7 @@ from flow.networks import RingNetwork
 # time horizon of a single rollout
 HORIZON = 3000
 # number of rollouts per training iteration
-N_ROLLOUTS = 40
+N_ROLLOUTS = 20
 # number of parallel workers
 N_CPUS = 2
 

@@ -9,6 +9,7 @@ ADDITIONAL_NET_PARAMS = {
     "length": 40,
     "lanes": 1,
     "speed_limit": 30,
+    "resolution": 40,
 }
 
 

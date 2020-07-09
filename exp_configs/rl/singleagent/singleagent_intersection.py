@@ -3,7 +3,7 @@ from flow.core.params import VehicleParams, SumoCarFollowingParams
 from flow.controllers import RLController, IDMController, ContinuousRouter
 from flow.envs import WaveAttenuationPOEnv
 from Network.intersection_network import IntersectionNetwork
-
+from Network.intersection_network import ADDITIONAL_NET_PARAMS
 # time horizon of a single rollout
 HORIZON = 1000
 # number of rollouts per training iteration
@@ -66,12 +66,8 @@ flow_params = dict(
     # network-related parameters (see flow.core.params.NetParams and the
     # network's documentation or ADDITIONAL_NET_PARAMS component)
     net=NetParams(
-        additional_params={
-            "length": 30,
-            "lanes": 1,
-            "speed_limit": 30,
-            "resolution": 40,
-        }, ),
+        additional_params=ADDITIONAL_NET_PARAMS.copy(),
+    ),
 
     # vehicles to be placed in the network at the start of a rollout (see
     # flow.core.params.VehicleParams)
