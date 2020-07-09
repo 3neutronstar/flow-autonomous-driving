@@ -3,9 +3,10 @@ import json
 import os
 import sys
 from time import strftime
+import timeit
 from copy import deepcopy
 import numpy as np
-import timeit
+
 
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
@@ -37,7 +38,7 @@ def parse_args(args):
 
     # optional input parameters (for RL parser)
     parser.add_argument(
-        '--rl_trainer', type=str, default="stable-baselines",
+        '--rl_trainer', type=str, default="stable-baselines3",
     )  # the RL trainer to use. either  or Stable-Baselines
     parser.add_argument(
         '--num_cpus', type=int, default=1,
@@ -65,171 +66,6 @@ def parse_args(args):
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
     return parser.parse_known_args(args)[0]
-
-# stable-baseline
-
-
-def run_model_stablebaseline(flow_params,
-                             num_cpus=1,
-                             rollout_size=50,
-                             num_steps=50):
-
-    from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
-    from stable_baselines import DDPG
-    from stable_baselines.deepq.policies import MlpPolicy
-    from stable_baselines.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise, AdaptiveParamNoiseSpec
-    if num_cpus == 1:
-        constructor = env_constructor(params=flow_params, version=0)()
-        # The algorithms require a vectorized environment to run
-        env = DummyVecEnv([lambda: constructor])
-    else:
-        env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
-                             for i in range(num_cpus)])
-
-    n_actions = env.action_space.shape[-1]
-    param_noise = None
-    action_noise = OrnsteinUhlenbeckActionNoise(
-        mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
-    train_model = DDPG('MlpPolicy', env, verbose=1, tensorboard_log="./PPO_tensorboard/",
-                       param_noise=param_noise, action_noise=action_noise)
-    train_model.learn(total_timesteps=num_steps)
-    return train_model
-
-
-def train_stable_baselines(submodule, flags):
-    """Train policies using the PPO algorithm in stable-baselines."""
-    from stable_baselines.common.vec_env import DummyVecEnv
-    from stable_baselines import DDPG
-    flow_params = submodule.flow_params
-    # Path to the saved files
-    exp_tag = flow_params['exp_tag']
-    result_name = '{}/{}'.format(exp_tag, strftime("%Y-%m-%d-%H:%M:%S"))
-
-    # Perform training.
-    print('Beginning training.')
-    model = run_model_stablebaseline(
-        flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
-
-    # Save the model to a desired folder and then delete it to demonstrate
-    # loading.
-    print('Saving the trained model!')
-    path = os.path.realpath(os.path.expanduser('~/baseline_results'))
-    ensure_dir(path)
-    save_path = os.path.join(path, result_name)
-    model.save(save_path)
-    print("check")
-    # dump the flow params
-    with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
-        json.dump(flow_params, outfile,
-                  cls=FlowParamsEncoder, sort_keys=True, indent=4)
-
-    # Replay the result by loading the model
-    print('Loading the trained model and testing it out!')
-    model.load(save_path)
-    flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
-    flow_params['sim'].render = True
-    env = env_constructor(params=flow_params, version=0)()
-
-    # The algorithms require a vectorized environment to run
-    eval_env = DummyVecEnv([lambda: env])
-    obs = eval_env.reset()
-    reward = 0
-    for _ in range(flow_params['env'].horizon):
-        action, _states = model.predict(obs)
-        obs, rewards, dones, info = eval_env.step(action)
-        reward += rewards
-    print('the final reward is {}'.format(reward))
-
-# rllib
-
-
-def setup_exps_rllib(flow_params,
-                     n_cpus,
-                     n_rollouts,
-                     policy_graphs=None,
-                     policy_mapping_fn=None,
-                     policies_to_train=None):
-    from ray import tune
-    from ray.tune.registry import register_env
-    try:
-        from ray.rllib.agents.agent import get_agent_class
-    except ImportError:
-        from ray.rllib.agents.registry import get_agent_class
-
-    horizon = flow_params['env'].horizon
-
-    alg_run = "PPO"
-
-    agent_cls = get_agent_class(alg_run)
-    config = deepcopy(agent_cls._default_config)
-
-    config["num_workers"] = n_cpus
-    config["train_batch_size"] = horizon * n_rollouts
-    config["gamma"] = 0.999  # discount rate
-    config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-    config["use_gae"] = True
-    config["lambda"] = 0.97
-    config["kl_target"] = 0.02
-    config["num_sgd_iter"] = 10
-    config["horizon"] = horizon
-
-    # save the flow params for replay
-    flow_json = json.dumps(
-        flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
-    config['env_config']['flow_params'] = flow_json
-    config['env_config']['run'] = alg_run
-
-    # multiagent configuration
-    if policy_graphs is not None:
-        print("policy_graphs", policy_graphs)
-        config['multiagent'].update({'policies': policy_graphs})
-    if policy_mapping_fn is not None:
-        config['multiagent'].update(
-            {'policy_mapping_fn': tune.function(policy_mapping_fn)})
-    if policies_to_train is not None:
-        config['multiagent'].update({'policies_to_train': policies_to_train})
-
-    create_env, gym_name = make_create_env(params=flow_params)
-
-    # Register as rllib env
-    register_env(gym_name, create_env)
-    return alg_run, gym_name, config
-
-
-def train_rllib(submodule, flags):
-    """Train policies using the PPO algorithm in RLlib."""
-    import ray
-    from ray.tune import run_experiments
-
-    flow_params = submodule.flow_params
-    n_cpus = submodule.N_CPUS
-    n_rollouts = submodule.N_ROLLOUTS
-    policy_graphs = getattr(submodule, "POLICY_GRAPHS", None)
-    policy_mapping_fn = getattr(submodule, "policy_mapping_fn", None)
-    policies_to_train = getattr(submodule, "policies_to_train", None)
-
-    alg_run, gym_name, config = setup_exps_rllib(
-        flow_params, n_cpus, n_rollouts,
-        policy_graphs, policy_mapping_fn, policies_to_train)
-
-    ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
-    exp_config = {
-        "run": alg_run,
-        "env": gym_name,
-        "config": {
-            **config
-        },
-        "checkpoint_freq": 20,
-        "checkpoint_at_end": True,
-        "max_failures": 999,
-        "stop": {
-            "training_iteration": flags.num_steps,
-        },
-    }
-
-    if flags.checkpoint_path is not None:
-        exp_config['restore'] = flags.checkpoint_path
-    run_experiments({flow_params["exp_tag"]: exp_config})
 
 # simulate without rl
 
@@ -290,7 +126,8 @@ def train_stable_baselines3(submodule, flags):
     from stable_baselines3.common.vec_env import DummyVecEnv
     from stable_baselines3 import PPO
     import torch as th
-    start_time = timeit.default_timer()
+    import torch.nn as nn
+
     flow_params = submodule.flow_params
     # Path to the saved files
     exp_tag = flow_params['exp_tag']
@@ -300,7 +137,6 @@ def train_stable_baselines3(submodule, flags):
     print('Beginning training.')
     model = run_model_stablebaseline3(
         flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
-
     # Save the model to a desired folder and then delete it to demonstrate
     # loading.
     print('Saving the trained model!')
@@ -309,10 +145,7 @@ def train_stable_baselines3(submodule, flags):
     save_path = os.path.join(path, result_name)
     model.save(save_path)
     # dump the flow params
-    # check time for choose GPU and CPU
-    stop_time = timeit.default_timer()
-    print(stop_time-start_time, "ms")
-    print("--------------------------------------------------------")
+
     with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
         json.dump(flow_params, outfile,
                   cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -323,11 +156,10 @@ def train_stable_baselines3(submodule, flags):
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
     env = env_constructor(params=flow_params, version=0)()
-    print("check1")
+
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
     obs = eval_env.reset()
-    print("check2")
     reward = 0
     horizon = 1500  # 150초 동작
     for _ in range(flow_params['env'].horizon):
@@ -372,11 +204,7 @@ def main(args):
         raise ValueError("Unable to find experiment config.")
 
     # Perform the training operation.
-    if flags.rl_trainer.lower() == "stable-baselines":
-        train_stable_baselines(submodule, flags)
-    elif flags.rl_trainer.lower() == "rllib":
-        train_rllib(submodule, flags)
-    elif flags.rl_trainer.lower() == "stable-baselines3":
+    if flags.rl_trainer.lower() == "stable-baselines3":
         train_stable_baselines3(submodule, flags)
     else:
         raise ValueError("rl_trainer should be either 'rllib', 'stable-baselines3', "
@@ -384,4 +212,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    start_time = timeit.default_timer()
     main(sys.argv[1:])
+    stop_time = timeit.default_timer()
+    print(start_time-stop_time)

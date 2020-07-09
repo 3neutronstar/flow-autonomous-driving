@@ -7,7 +7,7 @@ class IntersectionNetwork(Network):
 
 ADDITIONAL_NET_PARAMS = {
     "length": 40,
-    "lanes": 2,
+    "lanes": 1,
     "speed_limit": 30,
 }
 

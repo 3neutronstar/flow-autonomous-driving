@@ -10,13 +10,6 @@ from numpy import pi, sin, cos, linspace
 from Network.intersection_network import IntersectionNetwork
 
 
-ADDITIONAL_NET_PARAMS = {
-    "length": 40,
-    "num_lanes": 1,
-    "speed_limit": 30,
-}
-
-
 vehicles = VehicleParams()
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
