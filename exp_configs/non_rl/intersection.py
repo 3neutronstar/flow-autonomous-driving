@@ -22,7 +22,12 @@ initial_config = InitialConfig(spacing="uniform", bunching=40)
 
 env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
 
-additional_net_params = ADDITIONAL_NET_PARAMS.copy()
+additional_net_params = {
+    "length": 40,
+    "lanes": 1,
+    "speed_limit": 30,
+    "resolution": 40,
+}
 net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(

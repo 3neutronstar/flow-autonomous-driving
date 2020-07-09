@@ -1,7 +1,7 @@
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.core.params import VehicleParams, SumoCarFollowingParams
 from flow.controllers import RLController, IDMController, ContinuousRouter
-from flow.envs import WaveAttenuationPOEnv
+from flow.envs import WaveAttenuationPOEnv, AccelEnv
 from Network.intersection_network import IntersectionNetwork
 from Network.intersection_network import ADDITIONAL_NET_PARAMS
 # time horizon of a single rollout
@@ -36,7 +36,7 @@ flow_params = dict(
     exp_tag="stabilizing_the_intersection",
 
     # name of the flow environment the experiment is running on
-    env_name=WaveAttenuationPOEnv,
+    env_name=AccelEnv,
 
     # name of the network class the experiment is running on
     network=IntersectionNetwork,
@@ -59,7 +59,8 @@ flow_params = dict(
         additional_params={
             "max_accel": 1,
             "max_decel": 1,
-            "ring_length": [220, 270],
+            "target_velocity": 30,
+            "sort_vehicles": False
         },
     ),
 
