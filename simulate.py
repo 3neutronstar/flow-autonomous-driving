@@ -266,7 +266,6 @@ def train_stable_baselines3(submodule, flags):
     flow_params['sim'].render = False
     flow_params['env'].horizon = 1500  # 150초 동작
     env = env_constructor(params=flow_params, version=0)()
-    print("Simulate1")
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
     obs = eval_env.reset()
@@ -275,7 +274,6 @@ def train_stable_baselines3(submodule, flags):
         action, _states = model.predict(obs)
         obs, rewards, dones, info = eval_env.step(action)
         reward += rewards
-    print("Simulate")
     flow_params['sim'].render = True
     simulation = Experiment(flow_params)
     simulation.run(num_runs=1)
