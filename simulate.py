@@ -37,8 +37,8 @@ def parse_args(args):
 
     # optional input parameters (for RL parser)
     parser.add_argument(
-        '--rl_trainer', type=str, default="rllib",
-    )  # the RL trainer to use. either  or Stable-Baselines
+        '--rl_trainer', type=str, default="stable-baselines3",
+    )  # the RL trainer to use. either  or Stable-Baselines3
     parser.add_argument(  # for rllib
         '--algorithm', type=str, default="PPO",
     )  # choose algorithm in order to use
@@ -46,7 +46,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=500,
+        '--num_steps', type=int, default=5000,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -207,7 +207,7 @@ def run_model_stablebaseline3(flow_params,
     from stable_baselines3 import PPO
     from stable_baselines3.ppo import MlpPolicy
     import torch.nn as nn
-
+    
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
         # The algorithms require a vectorized environment to run
@@ -217,7 +217,8 @@ def run_model_stablebaseline3(flow_params,
                              for i in range(num_cpus)])
 
     train_model = PPO(MlpPolicy, env=env, verbose=1,
-                      tensorboard_log="./PPO_tensorboard/")
+                      tensorboard_log="./PPO_tensorboard/",device="cuda") #cpu, gpu selection 
+                      #automatically select gpu
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
