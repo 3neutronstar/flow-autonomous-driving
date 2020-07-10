@@ -195,9 +195,6 @@ def simulate_without_rl(flags, module):
 
     # Run for the specified number of rollouts.
     exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
-    if(flags.exp_config == "osm_test"):
-        f = open("./Network/data/osm.txt", "w")
-        f.close
 
 # stablebaseline_ddpg
 
