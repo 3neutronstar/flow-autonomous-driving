@@ -18,9 +18,12 @@ vehicles.add(veh_id="human",
 
 sim_params = SumoParams(sim_step=0.1, render=True)
 
-initial_config = InitialConfig(spacing="uniform", bunching=40)
+initial_config = InitialConfig(spacing="uniform",
+                               bunching=40,
+                               )
 
-env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
+env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS,
+                       )
 
 additional_net_params = {
     "length": 40,

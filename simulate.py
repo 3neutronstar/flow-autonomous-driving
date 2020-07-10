@@ -195,6 +195,9 @@ def simulate_without_rl(flags, module):
 
     # Run for the specified number of rollouts.
     exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
+    if(flags.exp_config == "osm_test"):
+        f = open("./Network/data/osm.txt", "w")
+        f.close
 
 # stablebaseline_ddpg
 
@@ -207,7 +210,7 @@ def run_model_stablebaseline3(flow_params,
     from stable_baselines3 import PPO
     from stable_baselines3.ppo import MlpPolicy
     import torch.nn as nn
-    
+
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
         # The algorithms require a vectorized environment to run
@@ -217,8 +220,8 @@ def run_model_stablebaseline3(flow_params,
                              for i in range(num_cpus)])
 
     train_model = PPO(MlpPolicy, env=env, verbose=1,
-                      tensorboard_log="./PPO_tensorboard/",device="cuda") #cpu, gpu selection 
-                      #automatically select gpu
+                      tensorboard_log="./PPO_tensorboard/", device="cuda")  # cpu, gpu selection
+    # automatically select gpu
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
