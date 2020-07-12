@@ -37,18 +37,18 @@ def parse_args(args):
 
     # optional input parameters (for RL parser)
     parser.add_argument(
-        '--rl_trainer', type=str, default="rllib",
-    )  # the RL trainer to use. either  or Stable-Baselines
-    parser.add_argument(
+        '--rl_trainer', type=str, default="stable-baselines3",
+    )  # the RL trainer to use. either  or Stable-Baselines3
+    parser.add_argument(  # for rllib
         '--algorithm', type=str, default="PPO",
     )  # choose algorithm in order to use
     parser.add_argument(
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
-    parser.add_argument(
-        '--num_steps', type=int, default=500,
+    parser.add_argument(  # how many times you want to learn
+        '--num_steps', type=int, default=5000,
     )  # How many total steps to perform learning over
-    parser.add_argument(
+    parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
     )  # How many steps are in a training batch.
     parser.add_argument(
@@ -88,7 +88,7 @@ def setup_exps_rllib(flow_params,
     horizon = flow_params['env'].horizon
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
-
+        print("runnin algorithm: ", alg_run, "Framework: ", "torch")
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
@@ -160,7 +160,7 @@ def train_rllib(submodule, flags):
             "training_iteration": flags.num_steps,
         },
     }
-
+    print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     # ?ïô?äµ?Åù?ÇòÍ≥? run experiment render?ïòÍ≤? ?ïòÍ∏?
@@ -217,7 +217,8 @@ def run_model_stablebaseline3(flow_params,
                              for i in range(num_cpus)])
 
     train_model = PPO(MlpPolicy, env=env, verbose=1,
-                      tensorboard_log="./PPO_tensorboard/")
+                      tensorboard_log="./PPO_tensorboard/", device="cuda")  # cpu, gpu selection
+    # automatically select gpu
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
@@ -236,8 +237,9 @@ def train_stable_baselines3(submodule, flags):
     result_name = '{}/{}'.format(exp_tag, strftime("%Y-%m-%d-%H:%M:%S"))
 
     # Perform training.
-    print(torch.cuda.is_available())
+    print("cuda is available: ", torch.cuda.is_available())
     print('Beginning training.')
+    print("==========================================")
     model = run_model_stablebaseline3(
         flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
 
@@ -260,10 +262,14 @@ def train_stable_baselines3(submodule, flags):
     print('Loading the trained model and testing it out!')
     model.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
+<<<<<<< HEAD
     flow_params['sim'].render = True
     flow_params['env'].horizon = 1500  # 150Ï¥? ?èô?ûë
+=======
+    flow_params['sim'].render = False
+    flow_params['env'].horizon = 1500  # 150Ï¥à ÎèôÏûë
+>>>>>>> 5f2c98d702213a80a3d8a728cfc68f1dcbaa3ff1
     env = env_constructor(params=flow_params, version=0)()
-
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
     obs = eval_env.reset()
@@ -272,7 +278,13 @@ def train_stable_baselines3(submodule, flags):
         action, _states = model.predict(obs)
         obs, rewards, dones, info = eval_env.step(action)
         reward += rewards
+<<<<<<< HEAD
     print("--------------------------------------------------------")
+=======
+    flow_params['sim'].render = True
+    simulation = Experiment(flow_params)
+    simulation.run(num_runs=1)
+>>>>>>> 5f2c98d702213a80a3d8a728cfc68f1dcbaa3ff1
     print('the final reward is {}'.format(reward))
     print("total run_time:", run_time,"s")
 

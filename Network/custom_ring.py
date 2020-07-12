@@ -2,7 +2,6 @@ from flow.networks import Network
 import numpy as np
 import sys
 import queue
-from numpy import pi, sin, cos, linspace
 
 
 class RingNetwork_custom(Network):
