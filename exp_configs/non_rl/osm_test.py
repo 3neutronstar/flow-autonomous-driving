@@ -1,3 +1,5 @@
+#This file is just for looking at network
+
 from flow.envs import TestEnv
 # the Experiment class is used for running simulations
 from flow.core.experiment import Experiment
@@ -31,3 +33,6 @@ flow_params = dict(
     veh=vehicles,
     initial=initial_config,
 )
+
+#Env에서 TestEnv 는 baseEnv를 부르고 base_env에서 traci network도 호출
+# 거기서 이제 맵데이터를 꺼내올 수 있음 
