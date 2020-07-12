@@ -163,7 +163,7 @@ def train_rllib(submodule, flags):
 
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
-    # í•™ìŠµëë‚˜ê³  run experiment renderí•˜ê²Œ í•˜ê¸°
+    # ?•™?Šµ??‚˜ê³? run experiment render?•˜ê²? ?•˜ê¸?
     run_experiments({flow_params["exp_tag"]: exp_config})
 
 # simulate without rl
@@ -252,8 +252,6 @@ def train_stable_baselines3(submodule, flags):
     # check time for choose GPU and CPU
     stop_time = timeit.default_timer()
     run_time = stop_time-start_time
-    print(stop_time-start_time, "s")
-    print("--------------------------------------------------------")
     with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
         json.dump(flow_params, outfile,
                   cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -263,7 +261,7 @@ def train_stable_baselines3(submodule, flags):
     model.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
-    flow_params['env'].horizon = 1500  # 150ì´ˆ ë™ì‘
+    flow_params['env'].horizon = 1500  # 150ì´? ?™?‘
     env = env_constructor(params=flow_params, version=0)()
 
     # The algorithms require a vectorized environment to run
@@ -274,8 +272,9 @@ def train_stable_baselines3(submodule, flags):
         action, _states = model.predict(obs)
         obs, rewards, dones, info = eval_env.step(action)
         reward += rewards
+    print("--------------------------------------------------------")
     print('the final reward is {}'.format(reward))
-    print("total run_time:", run_time)
+    print("total run_time:", run_time,"s")
 
 
 def main(args):
