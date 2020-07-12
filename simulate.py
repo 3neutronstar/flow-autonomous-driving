@@ -163,7 +163,6 @@ def train_rllib(submodule, flags):
     print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
-    # ?ïô?äµ?Åù?ÇòÍ≥? run experiment render?ïòÍ≤? ?ïòÍ∏?
     run_experiments({flow_params["exp_tag"]: exp_config})
 
 # simulate without rl
@@ -262,31 +261,33 @@ def train_stable_baselines3(submodule, flags):
     print('Loading the trained model and testing it out!')
     model.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
-<<<<<<< HEAD
-    flow_params['sim'].render = True
-    flow_params['env'].horizon = 1500  # 150Ï¥? ?èô?ûë
-=======
-    flow_params['sim'].render = False
-    flow_params['env'].horizon = 1500  # 150Ï¥à ÎèôÏûë
->>>>>>> 5f2c98d702213a80a3d8a728cfc68f1dcbaa3ff1
-    env = env_constructor(params=flow_params, version=0)()
-    # The algorithms require a vectorized environment to run
-    eval_env = DummyVecEnv([lambda: env])
-    obs = eval_env.reset()
-    reward = 0
-    for _ in range(flow_params['env'].horizon):
-        action, _states = model.predict(obs)
-        obs, rewards, dones, info = eval_env.step(action)
-        reward += rewards
-<<<<<<< HEAD
-    print("--------------------------------------------------------")
-=======
-    flow_params['sim'].render = True
-    simulation = Experiment(flow_params)
-    simulation.run(num_runs=1)
->>>>>>> 5f2c98d702213a80a3d8a728cfc68f1dcbaa3ff1
-    print('the final reward is {}'.format(reward))
-    print("total run_time:", run_time,"s")
+
+
+<< << << < HEAD
+flow_params['sim'].render = True
+flow_params['env'].horizon = 1500  # 150ÔøΩ? ?ÔøΩÔøΩ?ÔøΩÔøΩ
+== == == =
+flow_params['sim'].render = False
+flow_params['env'].horizon = 1500  # 150Ï¥à ÎèôÏûë
+>>>>>> > 5f2c98d702213a80a3d8a728cfc68f1dcbaa3ff1
+env = env_constructor(params=flow_params, version=0)()
+# The algorithms require a vectorized environment to run
+eval_env = DummyVecEnv([lambda: env])
+obs = eval_env.reset()
+reward = 0
+for _ in range(flow_params['env'].horizon):
+    action, _states = model.predict(obs)
+    obs, rewards, dones, info = eval_env.step(action)
+    reward += rewards
+<< << << < HEAD
+print("--------------------------------------------------------")
+== == == =
+flow_params['sim'].render = True
+simulation = Experiment(flow_params)
+simulation.run(num_runs=1)
+>>>>>> > 5f2c98d702213a80a3d8a728cfc68f1dcbaa3ff1
+print('the final reward is {}'.format(reward))
+print("total run_time:", run_time, "s")
 
 
 def main(args):

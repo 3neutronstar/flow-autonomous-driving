@@ -1,4 +1,4 @@
-#This file is just for looking at network
+# This file is just for looking at network
 
 from flow.envs import TestEnv
 # the Experiment class is used for running simulations
@@ -34,5 +34,4 @@ flow_params = dict(
     initial=initial_config,
 )
 
-#Env¿¡¼­ TestEnv ´Â baseEnv¸¦ ºÎ¸£°í base_env¿¡¼­ traci networkµµ È£Ãâ
-# °Å±â¼­ ÀÌÁ¦ ¸Êµ¥ÀÌÅÍ¸¦ ²¨³»¿Ã ¼ö ÀÖÀ½ 
+# Envì—ì„œ TestEnv ëŠ” baseEnvë¥¼ ë¶€ë¥´ê³  base_envì—ì„œ traci networkë„ í˜¸ì¶œ # ê±°ê¸°ì„œ ì´ì œ ë§µë°ì´í„°ë¥¼ êº¼ë‚´ì˜¬ ìˆ˜ ìˆìŒ
