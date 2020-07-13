@@ -12,8 +12,8 @@ v_enter = 10
 inner_length = 300
 long_length = 500
 short_length = 300
-n_rows = 2
-n_columns = 2
+n_rows = 1
+n_columns = 1
 num_cars_left = 20
 num_cars_right = 20
 num_cars_top = 20
@@ -162,8 +162,6 @@ phases = [{
     "state": "ryryryryryry"
 }]
 tl_logic.add("center0", phases=phases, programID=1)
-tl_logic.add("center1", phases=phases, programID=1)
-tl_logic.add("center2", phases=phases, programID=1, tls_type="actuated")
 
 additional_net_params = {
     "grid_array": grid_array,
