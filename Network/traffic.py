@@ -1,13 +1,16 @@
-from flow.networks import Network
+"""Contains the traffic light grid scenario class."""
+
+from flow.networks.base import Network
 from flow.core.params import InitialConfig
 from flow.core.params import TrafficLightParams
 from collections import defaultdict
+import numpy as np
 
 ADDITIONAL_NET_PARAMS = {
     # dictionary of traffic light grid array data
     "grid_array": {
         # number of horizontal rows of edges
-        "row_num": 2,
+        "row_num": 3,
         # number of vertical columns of edges
         "col_num": 2,
         # length of inner edges in the traffic light grid network
@@ -39,29 +42,6 @@ ADDITIONAL_NET_PARAMS = {
 
 
 class myEnvNetwork(Network):
-    """Traffic Light Grid network class.
-    The traffic light grid network consists of m vertical lanes and n
-    horizontal lanes, with a total of nxm intersections where the vertical
-    and horizontal edges meet.
-    Requires from net_params:
-    * **grid_array** : dictionary of grid array data, with the following keys
-      * **row_num** : number of horizontal rows of edges
-      * **col_num** : number of vertical columns of edges
-      * **inner_length** : length of inner edges in traffic light grid network
-      * **short_length** : length of edges that vehicles start on
-      * **long_length** : length of final edge in route
-      * **cars_top** : number of cars starting at the edges heading to the top
-      * **cars_bot** : number of cars starting at the edges heading to the
-        bottom
-      * **cars_left** : number of cars starting at the edges heading to the
-        left
-      * **cars_right** : number of cars starting at the edges heading to the
-        right
-    * **horizontal_lanes** : number of lanes in the horizontal edges
-    * **vertical_lanes** : number of lanes in the vertical edges
-    * **speed_limit** : speed limit for all edges. This may be represented as a
-      float value, or a dictionary with separate values for vertical and
-      horizontal lanes."""
 
     def __init__(self,
                  name,
@@ -123,11 +103,11 @@ class myEnvNetwork(Network):
 
     def specify_nodes(self, net_params):
         """See parent class."""
-        return self._inner_nodes + self._outer_nodes
+        return self._inner_nodes() + self._outer_nodes()
 
     def specify_edges(self, net_params):
         """See parent class."""
-        return self._inner_edges + self._outer_edges
+        return self._inner_edges() + self._outer_edges()
 
     def specify_routes(self, net_params):
         """See parent class."""
@@ -138,9 +118,13 @@ class myEnvNetwork(Network):
             bot_id = "bot{}_0".format(i)
             top_id = "top{}_{}".format(i, self.col_num)
             for j in range(self.col_num + 1):
-                routes[bot_id] += ["bot{}_{}".format(i, j)]
-                routes[top_id] += ["top{}_{}".format(i, self.col_num - j)]
+                routes[bot_id] += [(["bot{}_{}".format(i, j)], 0.5),
+                                   (["top{}_{}".format(i, self.col_num - j)], 0.5)]
+                routes[top_id] += [(["top{}_{}".format(i, self.col_num - j)],
+                                    0.5), (["bot{}_{}".format(i, j)], 0.5)]
 
+                # routes[bot_id] += [(["bot{}_{}".format(i, j)],0.5),(["top{}_{}".format(i, self.col_num - j)],0.5)]
+                # routes[top_id] += [(["top{}_{}".format(i, self.col_num - j)],0.5),(["bot{}_{}".format(i, j)],0.5)]
         # build column routes (vehicles go from top to bottom and vice versa)
         for j in range(self.col_num):
             left_id = "left{}_{}".format(self.row_num, j)
@@ -164,6 +148,10 @@ class myEnvNetwork(Network):
         }]
 
         return types
+
+    # ===============================
+    # ============ UTILS ============
+    # ===============================
 
     def _inner_nodes(self):
         """Build out the inner nodes of the network.
@@ -240,22 +228,18 @@ class myEnvNetwork(Network):
         for col in range(self.col_num):
             x = col * self.inner_length
             y = (self.row_num - 1) * self.inner_length
-            nodes += new_node(x, - self.short_length,
-                              "bot_col_short", col)  # short
+            nodes += new_node(x, - self.short_length, "bot_col_short", col)
             nodes += new_node(x, - self.long_length, "bot_col_long", col)
-            nodes += new_node(x, y + self.short_length,
-                              "top_col_short", col)  # short
+            nodes += new_node(x, y + self.short_length, "top_col_short", col)
             nodes += new_node(x, y + self.long_length, "top_col_long", col)
 
         # build nodes at the extremities of rows
         for row in range(self.row_num):
             x = (self.col_num - 1) * self.inner_length
             y = row * self.inner_length
-            nodes += new_node(- self.short_length, y,
-                              "left_row_short", row)  # short
+            nodes += new_node(- self.short_length, y, "left_row_short", row)
             nodes += new_node(- self.long_length, y, "left_row_long", row)
-            nodes += new_node(x + self.short_length, y,
-                              "right_row_short", row)  # short
+            nodes += new_node(x + self.short_length, y, "right_row_short", row)
             nodes += new_node(x + self.long_length, y, "right_row_long", row)
 
         return nodes
@@ -372,7 +356,7 @@ class myEnvNetwork(Network):
             # bottom edges
             id1 = "right0_{}".format(i)
             id2 = "left0_{}".format(i)
-            node1 = "bot_col_short{}".format(i)  # short left to right
+            node1 = "bot_col_short{}".format(i)
             node2 = "center{}".format(i)
             node3 = "bot_col_long{}".format(i)
             edges += new_edge(id1, node1, node2, "v", self.short_length)
@@ -381,7 +365,7 @@ class myEnvNetwork(Network):
             # top edges
             id1 = "left{}_{}".format(self.row_num, i)
             id2 = "right{}_{}".format(self.row_num, i)
-            node1 = "top_col_short{}".format(i)  # short right to left
+            node1 = "top_col_short{}".format(i)
             node2 = "center{}".format((self.row_num - 1) * self.col_num + i)
             node3 = "top_col_long{}".format(i)
             edges += new_edge(id1, node1, node2, "v", self.short_length)
@@ -444,3 +428,79 @@ class myEnvNetwork(Network):
                 con_dict[node_id] = conn
 
         return con_dict
+
+    # TODO necessary?
+    def specify_edge_starts(self):
+        """See parent class."""
+        edgestarts = []
+        for i in range(self.col_num + 1):
+            for j in range(self.row_num + 1):
+                index = "{}_{}".format(j, i)
+                if i != self.col_num:
+                    edgestarts += [("left" + index, 0 + i * 50 + j * 5000),
+                                   ("right" + index, 10 + i * 50 + j * 5000)]
+                if j != self.row_num:
+                    edgestarts += [("top" + index, 15 + i * 50 + j * 5000),
+                                   ("bot" + index, 20 + i * 50 + j * 5000)]
+
+        return edgestarts
+
+    # TODO necessary?
+    def gen_custom_start_pos(cls, net_params, initial_config, num_vehicles):
+        """See parent class."""
+        grid_array = net_params.additional_params["grid_array"]
+        row_num = grid_array["row_num"]
+        col_num = grid_array["col_num"]
+        cars_heading_left = grid_array["cars_left"]
+        cars_heading_right = grid_array["cars_right"]
+        cars_heading_top = grid_array["cars_top"]
+        cars_heading_bot = grid_array["cars_bot"]
+
+        start_pos = []
+
+        x0 = 6  # position of the first car
+        dx = 10  # distance between each car
+
+        start_lanes = []
+        for i in range(col_num):
+            start_pos += [("right0_{}".format(i), x0 + k * dx)
+                          for k in range(cars_heading_right)]
+            start_pos += [("left{}_{}".format(row_num, i), x0 + k * dx)
+                          for k in range(cars_heading_left)]
+            horz_lanes = np.random.randint(low=0, high=net_params.additional_params["horizontal_lanes"],
+                                           size=cars_heading_left + cars_heading_right).tolist()
+            start_lanes += horz_lanes
+
+        for i in range(row_num):
+            start_pos += [("top{}_{}".format(i, col_num), x0 + k * dx)
+                          for k in range(cars_heading_top)]
+            start_pos += [("bot{}_0".format(i), x0 + k * dx)
+                          for k in range(cars_heading_bot)]
+            vert_lanes = np.random.randint(low=0, high=net_params.additional_params["vertical_lanes"],
+                                           size=cars_heading_left + cars_heading_right).tolist()
+            start_lanes += vert_lanes
+
+        return start_pos, start_lanes
+
+    def node_mapping(self):
+        """Map nodes to edges.
+        Returns a list of pairs (node, connected edges) of all inner nodes
+        and for each of them, the 4 edges that leave this node.
+        The nodes are listed in alphabetical order, and within that, edges are
+        listed in order: [bot, right, top, left].
+        """
+        mapping = {}
+
+        for row in range(self.row_num):
+            for col in range(self.col_num):
+                node_id = "center{}".format(row * self.col_num + col)
+
+                top_edge_id = "left{}_{}".format(row + 1, col)
+                bot_edge_id = "right{}_{}".format(row, col)
+                right_edge_id = "top{}_{}".format(row, col + 1)
+                left_edge_id = "bot{}_{}".format(row, col)
+
+                mapping[node_id] = [left_edge_id, bot_edge_id,
+                                    right_edge_id, top_edge_id]
+
+        return sorted(mapping.items(), key=lambda x: x[0])
