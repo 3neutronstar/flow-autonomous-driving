@@ -48,132 +48,6 @@ grid_array = {
 }
 
 
-class IntersectionNetwork(IntersectionNetwork):  # update my network class
-    def __init__(self,
-                 name,
-                 vehicles,
-                 net_params,
-                 initial_config=InitialConfig(),
-                 traffic_lights=TrafficLightParams()):
-        """Initialize an n*m traffic light grid network."""
-        optional = ["tl_logic"]
-        for p in ADDITIONAL_NET_PARAMS.keys():
-            if p not in net_params.additional_params and p not in optional:
-                raise KeyError('Network parameter "{}" not supplied'.format(p))
-
-        for p in ADDITIONAL_NET_PARAMS["grid_array"].keys():
-            if p not in net_params.additional_params["grid_array"]:
-                raise KeyError(
-                    'Grid array parameter "{}" not supplied'.format(p))
-    def specify_nodes(self, net_params):
-        # one of the elements net_params will need is a "radius" value
-        r = net_params.additional_params["length"]
-        # specify the name and position (x,y) of each node
-        nodes = [{"id": "CL",   "x": -r, "y": 0},  # 5
-                 {"id": "CR",   "x": +r, "y": 0},  # 6
-                 {"id": "CU",   "x": 0, "y": r},  # 7
-                 {"id": "CD",   "x": 0, "y": -r},  # 8
-                 {"id": "IT",   "x": 0, "y": 0}]  # 9
-        return nodes
-
-    def specify_edges(self, net_params):
-        r = net_params.additional_params["length"]
-        edgelen = r
-        # this will let us control the number of lanes in the network
-        lanes = net_params.additional_params["lanes"]
-        # speed limit of vehicles in the network
-        speed_limit = net_params.additional_params["speed_limit"]
-        # L: left, R: right, U: Up D:Down
-        edges = [
-            {
-                "id": "edge16",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "CL",
-                "to": "IT",
-                "length": edgelen
-            },
-            {
-                "id": "edge17",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "CR",
-                "to": "IT",
-                "length": edgelen
-            },
-            {
-                "id": "edge18",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "CD",
-                "to": "IT",
-                "length": edgelen
-            },
-            {
-                "id": "edge19",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "CU",
-                "to": "IT",
-                "length": edgelen
-            },
-            {
-                "id": "edge20",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CR",
-                "length": edgelen
-            },
-            {
-                "id": "edge21",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CL",
-                "length": edgelen
-            },
-            {
-                "id": "edge22",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CU",
-                "length": edgelen
-            },
-            {
-                "id": "edge23",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CD",
-                "length": edgelen
-            }
-        ]
-        return edges
-
-    def specify_routes(self, net_params):
-        rts = {"edge0": ["edge0", "edge1", "edge2", "edge3"],
-               "edge1": ["edge1", "edge2", "edge3", "edge0"],
-               "edge2": ["edge2", "edge3", "edge0", "edge1"],
-               "edge3": ["edge3", "edge0", "edge1", "edge2"],
-               "edge4": ["edge4", "edge7", "edge6", "edge5"],
-               "edge5": ["edge5", "edge4", "edge7", "edge6"],
-               "edge6": ["edge6", "edge5", "edge4", "edge7"],
-               "edge7": ["edge7", "edge6", "edge5", "edge4"],
-               "edge10": ["edge10", "edge15", "edge16", "edge17", "edge18"],
-               "edge15": ["edge15", "edge16", "edge17", "edge17", "edge18"],
-               "edge16": ["edge16", "edge17", "edge18", "edge17", "edge18"],
-               "edge17": ["edge17", "edge18", "edge10", "edge17", "edge18"],
-               "edge18": ["edge18", "edge10", "edge15", "edge17", "edge18"],
-               "edge11": ["edge11", "edge19", "edge12", "edge13", "edge14"],
-               "edge19": ["edge19", "edge12", "edge13", "edge14", "edge11"],
-               "edge12": ["edge12", "edge13", "edge14", "edge11", "edge19"],
-               "edge13": ["edge13", "edge14", "edge11", "edge19", "edge12"],
-               "edge14": ["edge14", "edge11", "edge19", "edge12", "edge13"],
-               }
-        return rts
-
 initial = InitialConfig(
     spacing='custom', lanes_distribution=float('inf'), shuffle=True)
 inflow = InFlows()
@@ -203,9 +77,7 @@ inflow.add(
     departSpeed=20)
 net_params = NetParams(
     inflows=inflow,
-    additional_params=additional_net_params)
-
-
+    additional_params=ADDITIONAL_NET_PARAMS)
 
 
 vehicles = VehicleParams()
@@ -240,7 +112,7 @@ phases = [{
     "maxDur": "6",
     "state": "ryryryryryry"
 }]
-tl_logic.add("center0", phases=phases, programID=1)
+tl_logic.add("IT", phases=phases, programID=1)
 #tl_logic.add("center1", phases=phases, programID=1)
 #tl_logic.add("center2", phases=phases, programID=1, tls_type="actuated")
 additional_net_params = {
@@ -256,7 +128,7 @@ flow_params = dict(
     # name of the flow environment the experiment is running on
     env_name=AccelEnv,
     # name of the network class the experiment is running on
-    network=TrafficLightGridNetwork,
+    network=IntersectionNetwork,
     # simulator that is used by the experiment
     simulator='traci',
     # sumo-related parameters (see flow.core.params.SumoParams)
@@ -265,10 +137,7 @@ flow_params = dict(
         render=True,
     ),
     # environment related parameters (see flow.core.params.EnvParams)
-    env=EnvParams(
-        horizon=1500,
-        additional_params=ADDITIONAL_ENV_PARAMS.copy(),
-    ),
+    env=env_params,
     # network-related parameters (see flow.core.params.NetParams and the
     # network's documentation or ADDITIONAL_NET_PARAMS component)
     net=net_params,
@@ -277,8 +146,130 @@ flow_params = dict(
     veh=vehicles,
     # parameters specifying the positioning of vehicles upon initialization/
     # reset (see flow.core.params.InitialConfig)
-    initial=initial_config,
+    initial=initial,
     # traffic lights to be introduced to specific nodes (see
     # flow.core.params.TrafficLightParams)
     tls=tl_logic,
 )
+
+
+class IntersectionNetwork(IntersectionNetwork):  # update my network class
+    def __init__(self,
+                 name,
+                 vehicles,
+                 net_params,
+                 initial_config=InitialConfig(),
+                 traffic_lights=TrafficLightParams()):
+        """Initialize an n*m traffic light grid network."""
+        #optional = ["tl_logic"]
+
+    def specify_nodes(self, net_params):
+        # one of the elements net_params will need is a "radius" value
+        r = net_params.additional_params["length"]
+
+        # specify the name and position (x,y) of each node
+        nodes = [{"id": "IT",   "x": 0, "y": 0, "type": "traffic_light"},  # 9
+                 {"id": "CL",   "x": -r, "y": 0, "type": "priority"},  # 5
+                 {"id": "CR",   "x": +r, "y": 0, "type": "priority"},  # 6
+                 {"id": "CU",   "x": 0, "y": +r, "type": "priority"},  # 7
+                 {"id": "CD",   "x": 0, "y": -r, "type": "priority"}]  # 8
+        return nodes
+
+    def specify_edges(self, net_params):
+        r = net_params.additional_params["length"]
+        edgelen = r
+        # this will let us control the number of lanes in the network
+        lanes = net_params.additional_params["lanes"]
+        # speed limit of vehicles in the network
+        speed_limit = net_params.additional_params["speed_limit"]
+        # L: left, R: right, U: Up D:Down
+        edges = [
+            {
+                "id": "edge16",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "CL",
+                "to": "IT",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge17",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "CR",
+                "to": "IT",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge18",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "CD",
+                "to": "IT",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge19",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "CU",
+                "to": "IT",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge20",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "IT",
+                "to": "CR",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge21",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "IT",
+                "to": "CL",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge22",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "IT",
+                "to": "CU",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge23",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "IT",
+                "to": "CD",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            }
+
+        ]
+
+        return edges
+
+    def specify_routes(self, net_params):
+        rts = {"edge16": [(["edge16", "edge20"], 0.5), (["edge16", "edge22"], 0.5)],
+               "edge17": [(["edge17", "edge21"], 0.5), (["edge16", "edge23"], 0.5)],
+               "edge18": [(["edge18", "edge22"], 0.5), (["edge18", "edge21"], 0.5)],
+               "edge19": [(["edge19", "edge23"], 0.5), (["edge19", "edge20"], 0.5)],
+               "edge20": [(["edge20"], 1)],
+               "edge21": [(["edge21"], 1)],
+               "edge22": [(["edge22"], 1)],
+               "edge23": [(["edge23"], 1)]
+               }
+
+        return rts
