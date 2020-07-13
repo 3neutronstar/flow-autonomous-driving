@@ -1,4 +1,7 @@
+from flow.core.params import InitialConfig, TrafficLightParams
+from flow.networks import TrafficLightGridNetwork
 from flow.networks import Network
+from flow.core.params import NetParams
 
 
 class Traffic_Network(Network):
@@ -11,30 +14,33 @@ ADDITIONAL_NET_PARAMS = {
     "speed_limit": 30,
     "resolution": 40,
 }
+net_params = NetParams(
+    additional_params=ADDITIONAL_NET_PARAMS)
 
 
 class Traffic_Network(Traffic_Network):  # update my network class
+    def __init__(self,
+                 name,
+                 vehicles,
+                 net_params,
+                 initial_config=InitialConfig(),
+                 traffic_lights=TrafficLightParams()):
+        """Initialize an n*m traffic light grid network."""
+        #optional = ["tl_logic"]
 
     def specify_nodes(self, net_params):
         # one of the elements net_params will need is a "radius" value
-        net_params.additional_params = ADDITIONAL_NET_PARAMS.copy()
         r = net_params.additional_params["length"]
 
         # specify the name and position (x,y) of each node
-        nodes = [  # {"id": "LU", "x": -r,  "y": +r},  # 1
-            # {"id": "RU",  "x": +r,  "y": +r},  # 2
-            # {"id": "LD",    "x": -r,  "y": -r},  # 3
-            # {"id": "RD",   "x": +r, "y": -r},  # 4
-            {"id": "CL",   "x": -r, "y": 0},  # 5
-            {"id": "CR",   "x": +r, "y": 0},  # 6
-            {"id": "CU",   "x": 0, "y": r},  # 7
-            {"id": "CD",   "x": 0, "y": -r},  # 8
-            {"id": "IT",   "x": 0, "y": 0}]  # 9
-
+        nodes = [{"id": "IT",   "x": 0, "y": 0, "type": "traffic_light"},  # 9
+                 {"id": "CL",   "x": -r, "y": 0, "type": "priority"},  # 5
+                 {"id": "CR",   "x": +r, "y": 0, "type": "priority"},  # 6
+                 {"id": "CU",   "x": 0, "y": +r, "type": "priority"},  # 7
+                 {"id": "CD",   "x": 0, "y": -r, "type": "priority"}]  # 8
         return nodes
 
     def specify_edges(self, net_params):
-        net_params.additional_params = ADDITIONAL_NET_PARAMS.copy()
         r = net_params.additional_params["length"]
         edgelen = r
         # this will let us control the number of lanes in the network
@@ -125,11 +131,10 @@ class Traffic_Network(Traffic_Network):  # update my network class
                "edge17": [(["edge17", "edge21"], 0.5), (["edge16", "edge23"], 0.5)],
                "edge18": [(["edge18", "edge22"], 0.5), (["edge18", "edge21"], 0.5)],
                "edge19": [(["edge19", "edge23"], 0.5), (["edge19", "edge20"], 0.5)],
-               "edge20": [(["edge20"])],
-               "edge21": [(["edge21"])],
-               "edge22": [(["edge22"])],
-               "edge23": [(["edge23"])],
-
+               "edge20": [(["edge20"], 1)],
+               "edge21": [(["edge21"], 1)],
+               "edge22": [(["edge22"], 1)],
+               "edge23": [(["edge23"], 1)]
                }
 
         return rts

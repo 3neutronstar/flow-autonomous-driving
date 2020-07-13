@@ -10,9 +10,10 @@ from flow.core.params import InFlows
 from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
 from flow.networks import TrafficLightGridNetwork
 from flow.networks import Network
+from flow.core.params import NetParams
 
 
-class IntersectionNetwork(Network):
+class Traffic_Network(Network):
     pass
 
 
@@ -75,6 +76,7 @@ inflow.add(
     probability=0.25,
     departLane='free',
     departSpeed=20)
+
 net_params = NetParams(
     inflows=inflow,
     additional_params=ADDITIONAL_NET_PARAMS)
@@ -115,12 +117,6 @@ phases = [{
 tl_logic.add("IT", phases=phases, programID=1)
 #tl_logic.add("center1", phases=phases, programID=1)
 #tl_logic.add("center2", phases=phases, programID=1, tls_type="actuated")
-additional_net_params = {
-    "grid_array": grid_array,
-    "speed_limit": 35,
-    "horizontal_lanes": 1,
-    "vertical_lanes": 1
-}
 
 flow_params = dict(
     # name of the experiment
@@ -128,7 +124,7 @@ flow_params = dict(
     # name of the flow environment the experiment is running on
     env_name=AccelEnv,
     # name of the network class the experiment is running on
-    network=IntersectionNetwork,
+    network=Traffic_Network,
     # simulator that is used by the experiment
     simulator='traci',
     # sumo-related parameters (see flow.core.params.SumoParams)
@@ -153,7 +149,7 @@ flow_params = dict(
 )
 
 
-class IntersectionNetwork(IntersectionNetwork):  # update my network class
+class Traffic_Network(Traffic_Network):  # update my network class
     def __init__(self,
                  name,
                  vehicles,
