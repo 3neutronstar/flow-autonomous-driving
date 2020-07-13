@@ -6,6 +6,7 @@ from flow.core.params import SumoCarFollowingParams
 from flow.core.params import InFlows
 from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
 from flow.networks import TrafficLightGridNetwork
+from Network.traffic import myEnvNetwork
 USE_INFLOWS = False
 
 v_enter = 10
@@ -189,7 +190,7 @@ flow_params = dict(
     env_name=AccelEnv,
 
     # name of the network class the experiment is running on
-    network=TrafficLightGridNetwork,
+    network=myEnvNetwork,
 
     # simulator that is used by the experiment
     simulator='traci',
