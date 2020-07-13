@@ -4,9 +4,9 @@ from flow.core.params import VehicleParams
 from flow.core.params import TrafficLightParams
 from flow.core.params import SumoCarFollowingParams
 from flow.core.params import InFlows
-from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
+from flow.envs import TrafficLightGridEnv
 from flow.networks import TrafficLightGridNetwork
-from Network.traffic import myEnvNetwork
+from Network.traffic import Traffic_Network
 USE_INFLOWS = False
 
 v_enter = 10
@@ -59,7 +59,7 @@ def gen_edges(col_num, row_num):
     for i in range(row_num):
         edges += ['bot' + str(i) + '_' + '0']
         edges += ['top' + str(i) + '_' + str(col_num)]
-    print(edges)
+
     return edges
 
 
@@ -138,9 +138,8 @@ vehicles.add(
     ),
     num_vehicles=tot_cars)
 
-env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
+env_params = EnvParams()
 
-tl_logic = TrafficLightParams(baseline=False)
 phases = [{
     "duration": "31",
     "minDur": "8",
@@ -162,13 +161,15 @@ phases = [{
     "maxDur": "6",
     "state": "ryryryryryry"
 }]
-tl_logic.add("center0", phases=phases, programID=1)
+tl_logic = TrafficLightParams(baseline=False)
+tl_logic.add("IT", tls_type="static", phases=phases, programID=1)
 
 additional_net_params = {
     "grid_array": grid_array,
     "speed_limit": 35,
     "horizontal_lanes": 1,
-    "vertical_lanes": 1
+    "vertical_lanes": 1,
+
 }
 
 if USE_INFLOWS:
@@ -187,10 +188,10 @@ flow_params = dict(
     exp_tag='grid-intersection',
 
     # name of the flow environment the experiment is running on
-    env_name=AccelEnv,
+    env_name=TrafficLightGridEnv,
 
     # name of the network class the experiment is running on
-    network=myEnvNetwork,
+    network=Traffic_Network,
 
     # simulator that is used by the experiment
     simulator='traci',
@@ -204,7 +205,8 @@ flow_params = dict(
     # environment related parameters (see flow.core.params.EnvParams)
     env=EnvParams(
         horizon=1500,
-        additional_params=ADDITIONAL_ENV_PARAMS.copy(),
+        additional_params={"target_velocity": 50,
+                           "switch_time": 3.0, "tl_type": "controlled", "discrete": "False"}
     ),
 
     # network-related parameters (see flow.core.params.NetParams and the
