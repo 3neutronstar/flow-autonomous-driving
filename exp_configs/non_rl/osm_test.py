@@ -12,7 +12,9 @@ from flow.core.params import EnvParams
 from flow.core.params import SumoParams
 # map data
 from Network.osm_network import OsmNetwork
-
+from flow.envs.base import Env
+import gym
+from abc import ABCMeta
 net_params = NetParams(
     osm_path='./Network/map.osm'
 )

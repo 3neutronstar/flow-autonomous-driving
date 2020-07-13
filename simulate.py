@@ -188,12 +188,20 @@ def simulate_without_rl(flags, module):
         with open(os.path.join(dir_, "{}.json".format(fp_)), 'w') as outfile:
             json.dump(flow_params, outfile,
                       cls=FlowParamsEncoder, sort_keys=True, indent=4)
+
+    # Run for the specified number of rollouts.
+
     flow_params['env'].horizon = 1500
     # Create the experiment object.
     exp = Experiment(flow_params, callables)
-
-    # Run for the specified number of rollouts.
     exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
+    # edge and node check
+    # if flags.osm_output.lower() == "true":
+    #     edge, junction = exp.env.k.network.generate_net_from_osm(
+    #         flow_params['net'])
+    #     print(edge)
+    #     print(junction)
+# test
 
 # stablebaseline_ddpg
 
@@ -227,8 +235,6 @@ def train_stable_baselines3(submodule, flags):
     from stable_baselines3.common.vec_env import DummyVecEnv
     from stable_baselines3 import PPO
     import torch
-
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     start_time = timeit.default_timer()
     flow_params = submodule.flow_params
     # Path to the saved files
