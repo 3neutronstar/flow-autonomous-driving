@@ -58,7 +58,7 @@ def gen_edges(col_num, row_num):
     for i in range(row_num):
         edges += ['bot' + str(i) + '_' + '0']
         edges += ['top' + str(i) + '_' + str(col_num)]
-
+    print(edges)
     return edges
 
 

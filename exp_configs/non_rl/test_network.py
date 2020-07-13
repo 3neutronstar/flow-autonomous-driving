@@ -11,7 +11,7 @@ from flow.core.params import InitialConfig
 from flow.core.params import EnvParams
 from flow.core.params import SumoParams
 # map data
-from Network.turnleft_network import Turnleft_Network, ADDITIONAL_NET_PARAMS
+from Network.TestNetwork import TestNetwork, ADDITIONAL_NET_PARAMS
 from flow.envs.base import Env
 import gym
 from abc import ABCMeta
@@ -32,7 +32,7 @@ vehicles.add('human', num_vehicles=1,)
 flow_params = dict(
     exp_tag='test_network',
     env_name=TestEnv,
-    network=Turnleft_Network,
+    network=TestNetwork,
     simulator='traci',
     sim=sim_params,
     env=env_params,
