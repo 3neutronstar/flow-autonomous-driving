@@ -23,31 +23,6 @@ ADDITIONAL_NET_PARAMS = {
     "speed_limit": 30,
     "resolution": 40,
 }
-USE_INFLOWS = False
-v_enter = 10
-inner_length = 300
-long_length = 300
-short_length = 300
-n_rows = 1
-n_columns = 1
-num_cars_left = 20
-num_cars_right = 20
-num_cars_top = 20
-num_cars_bot = 20
-tot_cars = (num_cars_left + num_cars_right) * n_columns \
-    + (num_cars_top + num_cars_bot) * n_rows
-grid_array = {
-    "short_length": short_length,
-    "inner_length": inner_length,
-    "long_length": long_length,
-    "row_num": n_rows,
-    "col_num": n_columns,
-    "cars_left": num_cars_left,
-    "cars_right": num_cars_right,
-    "cars_top": num_cars_top,
-    "cars_bot": num_cars_bot
-}
-
 
 initial = InitialConfig(
     spacing='custom', lanes_distribution=float('inf'), shuffle=True)
@@ -150,15 +125,7 @@ flow_params = dict(
 
 
 class Traffic_Network(Traffic_Network):  # update my network class
-    def __init__(self,
-                 name,
-                 vehicles,
-                 net_params,
-                 initial_config=InitialConfig(),
-                 traffic_lights=TrafficLightParams()):
-        """Initialize an n*m traffic light grid network."""
-        #optional = ["tl_logic"]
-
+    
     def specify_nodes(self, net_params):
         # one of the elements net_params will need is a "radius" value
         r = net_params.additional_params["length"]
@@ -252,7 +219,6 @@ class Traffic_Network(Traffic_Network):  # update my network class
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             }
-
         ]
 
         return edges
