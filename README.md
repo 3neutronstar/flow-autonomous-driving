@@ -36,4 +36,16 @@ traffic light agents being trained through RL algorithms provided by OpenAI *sta
 python simulate.py EXP_CONFIG --rl_trainer "stable-baselines3"
 ```
 
+
+## OSM - Output (Open Street Map)
+If you want to use osm file for making network, *map.osm* file should replace same name of file in 'Network' directory.
+You want to see their results, run this code.
+
+```shell script
+python simulate.py osm_test
+```
+
+After that, If you want to see those output file(XML), you could find in './flow/flow/core/kernel/debug/cfg/~.net.cfg'
+
+
 ## Contributors

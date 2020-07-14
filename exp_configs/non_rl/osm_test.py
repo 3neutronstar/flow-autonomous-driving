@@ -41,5 +41,3 @@ flow_params = dict(
     initial=initial_config,
     tls = tl_logic
 )
-
-# Env에서 TestEnv 는 baseEnv를 부르고 base_env에서 traci network도 호출 # 거기서 이제 맵데이터를 꺼내올 수 있음
