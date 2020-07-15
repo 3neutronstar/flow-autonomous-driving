@@ -1,4 +1,4 @@
-# This file is just for looking at network
+# This file is just for looking at network without going cars.
 
 from flow.envs import TestEnv
 # the Experiment class is used for running simulations

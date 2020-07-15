@@ -5,14 +5,6 @@ class IntersectionNetwork(Network):
     pass
 
 
-ADDITIONAL_NET_PARAMS = {
-    "length": 150,
-    "lanes": 1,
-    "speed_limit": 30,
-    "resolution": 40,
-}
-
-
 class IntersectionNetwork(IntersectionNetwork):  # update my network class
 
     def specify_nodes(self, net_params):

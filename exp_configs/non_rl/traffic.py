@@ -2,14 +2,18 @@
 
 """Grid example."""
 from flow.controllers import GridRouter
+
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.core.params import VehicleParams
 from flow.core.params import TrafficLightParams
 from flow.core.params import SumoCarFollowingParams
 from flow.core.params import InFlows
+
 from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
+
 from flow.networks import TrafficLightGridNetwork
 from flow.networks import Network
+
 from flow.core.params import NetParams
 
 
@@ -58,16 +62,11 @@ net_params = NetParams(
 
 
 vehicles = VehicleParams()
-vehicles.add(
-    veh_id="human",
-    routing_controller=(GridRouter, {}),
-    car_following_params=SumoCarFollowingParams(
-        min_gap=2.5,
-        decel=7.5,  # avoid collisions at emergency stops
-    ),
-    num_vehicles=tot_cars)
+
 env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
+
 tl_logic = TrafficLightParams(baseline=False)
+
 phases = [{
     "duration": "31",
     "minDur": "8",
@@ -125,7 +124,7 @@ flow_params = dict(
 
 
 class Traffic_Network(Traffic_Network):  # update my network class
-    
+
     def specify_nodes(self, net_params):
         # one of the elements net_params will need is a "radius" value
         r = net_params.additional_params["length"]

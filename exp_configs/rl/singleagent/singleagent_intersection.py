@@ -3,14 +3,20 @@ from flow.core.params import VehicleParams, SumoCarFollowingParams
 from flow.controllers import RLController, IDMController, ContinuousRouter
 from flow.envs import WaveAttenuationPOEnv, AccelEnv
 from Network.intersection_network import IntersectionNetwork
-from Network.intersection_network import ADDITIONAL_NET_PARAMS
-# time horizon of a single rollout
+# # time horizon of a single rollout
 HORIZON = 1000
-# number of rollouts per training iteration
-N_ROLLOUTS = 8
-# number of parallel workers
-N_CPUS = 2
+# # number of rollouts per training iteration
+# N_ROLLOUTS = 8
+# # number of parallel workers
+# N_CPUS = 2
 
+
+ADDITIONAL_NET_PARAMS = {
+    "length": 150,
+    "lanes": 1,
+    "speed_limit": 30,
+    "resolution": 40,
+}
 # We place one autonomous vehicle and 22 human-driven vehicles in the network
 vehicles = VehicleParams()
 vehicles.add(

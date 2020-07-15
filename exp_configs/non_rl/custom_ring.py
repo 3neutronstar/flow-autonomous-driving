@@ -18,9 +18,20 @@ sim_params = SumoParams(sim_step=0.1, render=True)
 
 initial_config = InitialConfig(spacing="uniform", bunching=40)
 
-env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
+env_params = EnvParams(
+    horizon=1500,
+    additional_params=ADDITIONAL_ENV_PARAMS)
+
+
+ADDITIONAL_NET_PARAMS = {
+    "length": 40,
+    "lanes": 1,
+    "speed_limit": 30,
+}
 
 additional_net_params = ADDITIONAL_NET_PARAMS.copy()
+
+
 net_params = NetParams(additional_params=additional_net_params)
 
 
@@ -39,14 +50,11 @@ flow_params = dict(
         sim_step=0.1,
     ),
     # environment related parameters (see flow.core.params.EnvParams)
-    env=EnvParams(
-        horizon=1500,
-        additional_params=ADDITIONAL_ENV_PARAMS,
-    ),
+    env=env_params,
     # network-related parameters (see flow.core.params.NetParams and the
     # network's documentation or ADDITIONAL_NET_PARAMS component)
     net=NetParams(
-        additional_params=ADDITIONAL_NET_PARAMS.copy(),
+        additional_params=additional_net_params,
     ),
     # vehicles to be placed in the network at the start of a rollout (see
     # flow.core.params.VehicleParams)

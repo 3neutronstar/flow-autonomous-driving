@@ -4,21 +4,22 @@ import sys
 import queue
 
 
-class RingNetwork_custom(Network):
-    pass
-
-
 ADDITIONAL_NET_PARAMS = {
     "length": 40,
     "lanes": 1,
     "speed_limit": 30,
+    "resolution": 40
 }
+
+
+class RingNetwork_custom(Network):
+    pass
 
 
 class RingNetwork_custom(RingNetwork_custom):
 
     def specify_nodes(self, net_params):
-        r = net_params.additional_params["length"]
+        r = ADDITIONAL_NET_PARAMS["length"]
         nodes = [{"id": "0", "x": 0, "y": +r},
                  {"id": "1", "x": +r, "y": +r},
                  {"id": "2", "x": +r, "y": 0},
@@ -31,13 +32,13 @@ class RingNetwork_custom(RingNetwork_custom):
                          [0, 0, 1, 0],
                          [0, 0, 0, 1],
                          [1, 0, 0, 0]])
-        length = net_params.additional_params["length"]
-        resolution = net_params.additional_params["resolution"]
+        length = ADDITIONAL_NET_PARAMS["length"]
+        resolution = ADDITIONAL_NET_PARAMS["resolution"]
         edgelen = length
         # this will let us control the number of lanes in the network
         #lanes = net_params.additional_params["num_lanes"]
         # speed limit of vehicles in the network
-        speed_limit = net_params.additional_params["speed_limit"]
+        speed_limit = ADDITIONAL_NET_PARAMS["speed_limit"]
         # L: left, R: right, U: Up D:Down
         edges = list()
         # if you want to connect change num lanes, chage the number of damg component

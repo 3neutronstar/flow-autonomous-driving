@@ -7,13 +7,13 @@ from flow.networks.ring import RingNetwork, ADDITIONAL_NET_PARAMS
 from flow.networks import Network
 
 from Network.intersection_network import IntersectionNetwork
-
+from controllers.intersection_lane_controller import intersection_lane_controller
 
 vehicles = VehicleParams()
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
              routing_controller=(ContinuousRouter, {}),
-             num_vehicles=18)
+             lane_change_controller=num_vehicles=18)
 
 sim_params = SumoParams(sim_step=0.1, render=True)
 

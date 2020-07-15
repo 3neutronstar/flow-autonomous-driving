@@ -17,7 +17,10 @@ from Network.osm_network import OsmNetwork
 from flow.envs.base import Env
 import gym
 from abc import ABCMeta
-tl_logic = TrafficLightParams(baseline= False)
+
+# if traffic is in osm, activate this
+tl_logic = TrafficLightParams(baseline=False)
+
 net_params = NetParams(
     osm_path='./Network/map.osm'
 
@@ -27,7 +30,7 @@ sim_params = SumoParams(render=True)
 initial_config = InitialConfig()
 vehicles = VehicleParams()
 vehicles.add('human', num_vehicles=80,)
- 
+
 
 flow_params = dict(
     exp_tag='osm_test',
@@ -39,5 +42,5 @@ flow_params = dict(
     net=net_params,
     veh=vehicles,
     initial=initial_config,
-    tls = tl_logic
+    tls=tl_logic  # if traffic is in osm, activate this
 )
