@@ -137,7 +137,8 @@ class Experiment:
         t = time.time()
         times = []
 
-        for i in range(num_runs):
+    ''' Experiment Operation Part'''
+    for i in range(num_runs):
             ret = 0
             vel = []
             custom_vals = {key: [] for key in self.custom_callables.keys()}
@@ -160,6 +161,7 @@ class Experiment:
                 if done:
                     break
 
+            # End Operation##################################################
             # Store the information from the run in info_dict.
             outflow = self.env.k.vehicle.get_outflow_rate(int(500))
             info_dict["returns"].append(ret)
@@ -167,7 +169,6 @@ class Experiment:
             info_dict["outflows"].append(outflow)
             for key in custom_vals.keys():
                 info_dict[key].append(np.mean(custom_vals[key]))
-
             print("Round {0}, return: {1}".format(i, ret))
 
         # Print the averages/std for all variables in the info_dict.
