@@ -46,7 +46,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,
+        '--num_steps', type=int, default=5000,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -228,7 +228,7 @@ def run_model_stablebaseline3(flow_params,
     train_model = PPO(MlpPolicy, env=env, verbose=1, n_epochs=rollout_size,
                       tensorboard_log="./PPO_tensorboard/", device="cuda")  # cpu, gpu selection
     # automatically select gpu
-    train_model.learn(total_timesteps=num_steps, n_eval_episodes=rollout_size)
+    train_model.learn(total_timesteps=num_steps*rollout_size)
     return train_model
 
 

@@ -99,6 +99,8 @@ class Experiment:
                     custom_vals[key].append(lambda_func(self.env))
                 if done:
                     break
+                # if j % 100 == 0:
+                print(self.env.k.vehicle.get_position(veh_ids[0]))
 
             # End Operation##################################################
             # Store the information from the run in info_dict.
