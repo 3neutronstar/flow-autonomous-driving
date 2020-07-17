@@ -11,7 +11,7 @@ from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
 from flow.utils.registry import make_create_env
-from flow.core.experiment import Experiment
+from Experiment.experiment import Experiment
 
 
 def parse_args(args):
@@ -46,7 +46,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=5000,
+        '--num_steps', type=int, default=1500,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -88,10 +88,10 @@ def setup_exps_rllib(flow_params,
     horizon = flow_params['env'].horizon
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
-        print("runnin algorithm: ", alg_run, "Framework: ", "torch")
+        print("runnin algorithm: ", alg_run)  # "Framework: ", "torch"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
+        #config['framework'] = "torch"
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -106,7 +106,7 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
+        #config['framework'] = "torch"
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -160,10 +160,12 @@ def train_rllib(submodule, flags):
             "training_iteration": flags.num_steps,
         },
     }
-    print(exp_config["config"]["framework"])
+    # print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     run_experiments({flow_params["exp_tag"]: exp_config})
+    simulation = Experiment(flow_params)
+    simulation.run(num_runs=1)
 
 # simulate without rl
 
@@ -223,10 +225,10 @@ def run_model_stablebaseline3(flow_params,
         env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
                              for i in range(num_cpus)])
 
-    train_model = PPO(MlpPolicy, env=env, verbose=1,
+    train_model = PPO(MlpPolicy, env=env, verbose=1, n_epochs=rollout_size,
                       tensorboard_log="./PPO_tensorboard/", device="cuda")  # cpu, gpu selection
     # automatically select gpu
-    train_model.learn(total_timesteps=num_steps)
+    train_model.learn(total_timesteps=num_steps, n_eval_episodes=rollout_size)
     return train_model
 
 
