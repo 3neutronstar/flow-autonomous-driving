@@ -6,14 +6,15 @@ from flow.networks.ring import RingNetwork, ADDITIONAL_NET_PARAMS
 from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
-from Network.custom_ring import RingNetwork_custom
+from Network.custom_ring import RingNetwork_custom, ADDITIONAL_NET_PARAMS
 
 vehicles = VehicleParams()
+
+
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
              routing_controller=(ContinuousRouter, {}),
              num_vehicles=14)
-
 sim_params = SumoParams(sim_step=0.1, render=True)
 
 initial_config = InitialConfig(spacing="uniform", bunching=40)
@@ -21,13 +22,6 @@ initial_config = InitialConfig(spacing="uniform", bunching=40)
 env_params = EnvParams(
     horizon=1500,
     additional_params=ADDITIONAL_ENV_PARAMS)
-
-
-ADDITIONAL_NET_PARAMS = {
-    "length": 40,
-    "lanes": 1,
-    "speed_limit": 30,
-}
 
 additional_net_params = ADDITIONAL_NET_PARAMS.copy()
 

@@ -5,8 +5,8 @@ import queue
 
 
 ADDITIONAL_NET_PARAMS = {
-    "length": 40,
-    "lanes": 1,
+    "length": 50,
+    "lanes": 2,
     "speed_limit": 30,
     "resolution": 40
 }
@@ -28,10 +28,10 @@ class RingNetwork_custom(RingNetwork_custom):
         return nodes
 
     def specify_edges(self, net_params):
-        damg = np.array([[0, 1, 0, 0],
-                         [0, 0, 1, 0],
-                         [0, 0, 0, 1],
-                         [1, 0, 0, 0]])
+        damg = np.array([[0, 2, 0, 0],
+                         [0, 0, 2, 0],
+                         [0, 0, 0, 2],
+                         [2, 0, 0, 0]])
         length = ADDITIONAL_NET_PARAMS["length"]
         resolution = ADDITIONAL_NET_PARAMS["resolution"]
         edgelen = length
