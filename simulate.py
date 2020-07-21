@@ -67,8 +67,10 @@ def parse_args(args):
         '--no_render',
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
+    parser.add_argument(  # after using rl rendering the result
+        '--rl_render', type=str, default=None,
+    )  # choose algorithm in order to use
     return parser.parse_known_args(args)[0]
-
 # rllib
 
 
@@ -91,7 +93,7 @@ def setup_exps_rllib(flow_params,
         print("runnin algorithm: ", alg_run)  # "Framework: ", "torch"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        #config['framework'] = "torch"
+        # config['framework'] = "torch"
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -106,7 +108,7 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        #config['framework'] = "torch"
+        # config['framework'] = "torch"
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -289,6 +291,41 @@ def train_stable_baselines3(submodule, flags):
     print("total run_time:", run_time, "s")
 
 
+def rendering_after_rl(flags, module):
+    dir_ = "./RL_Exp/"+flags.exp_config
+    with open(os.path.join(dir_, "params.json"), 'r') as readfile:
+        save_read_file = json.load(readfile)
+        print(save_read_file)
+
+    flow_params = getattr(module, flags.exp_config).flow_params
+    print(flow_params)
+    if hasattr(getattr(module, flags.exp_config), "custom_callables"):
+        callables = getattr(module, flags.exp_config).custom_callables
+    else:
+        callables = None
+    flow_params['sim'].render = not flags.no_render
+    flow_params['simulator'] = 'traci'
+
+    # Specify an emission path if they are meant to be generated.
+    if flags.gen_emission:
+        flow_params['sim'].emission_path = "./data"
+
+        # Create the flow_params object
+        fp_ = flow_params['exp_tag']
+        dir_ = flow_params['sim'].emission_path
+        with open(os.path.join(dir_, "{}.json".format(fp_)), 'w') as outfile:
+            json.dump(flow_params, outfile,
+                      cls=FlowParamsEncoder, sort_keys=True, indent=4)
+
+    # Run for the specified number of rollouts.
+
+    flow_params['env'].horizon = 1500
+    # Create the experiment object.
+    exp = Experiment(flow_params, callables)
+    exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
+    print("hello")
+
+
 def main(args):
     """Perform the training operations."""
     # Parse script-level arguments (not including package arguments).
@@ -301,12 +338,13 @@ def main(args):
         "exp_configs.rl.multiagent", fromlist=[flags.exp_config])
     module_nonrl = __import__(
         "exp_configs.non_rl", fromlist=[flags.exp_config])
-
-    # Import the sub-module containing the specified exp_config and determine
-    # whether the environment is single agent or multi-agent.
-    # non_rl part
+    if flags.rl_render.lower() != None:
+        rendering_after_rl(flags, module)
+        return
+        # Import the sub-module containing the specified exp_config and determine
+        # whether the environment is single agent or multi-agent.
+        # non_rl part
     if hasattr(module_nonrl, flags.exp_config):
-
         simulate_without_rl(flags, module_nonrl)
         return
     # rl part
