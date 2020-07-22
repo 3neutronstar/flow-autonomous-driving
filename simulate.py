@@ -93,7 +93,8 @@ def setup_exps_rllib(flow_params,
         print("runnin algorithm: ", alg_run)  # "Framework: ", "torch"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        # config['framework'] = "torch"
+        # ////////////////////////////////////////////////////////////  torch
+        config['framework'] = "torch"
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -108,7 +109,7 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        # config['framework'] = "torch"
+        config['framework'] = "torch"
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -230,7 +231,7 @@ def run_model_stablebaseline3(flow_params,
     train_model = PPO(MlpPolicy, env=env, verbose=1, n_epochs=rollout_size,
                       tensorboard_log="./PPO_tensorboard/", device="cuda")  # cpu, gpu selection
     # automatically select gpu
-    train_model.learn(total_timesteps=num_steps*rollout_size)
+    train_model.learn(total_timesteps=num_steps*rollout_size)  #
     return train_model
 
 
@@ -338,12 +339,13 @@ def main(args):
         "exp_configs.rl.multiagent", fromlist=[flags.exp_config])
     module_nonrl = __import__(
         "exp_configs.non_rl", fromlist=[flags.exp_config])
-    if flags.rl_render.lower() != None:
-        rendering_after_rl(flags, module)
-        return
-        # Import the sub-module containing the specified exp_config and determine
-        # whether the environment is single agent or multi-agent.
-        # non_rl part
+    # ToDO to fix
+    # if flags.rl_render.lower() != None:
+    #     rendering_after_rl(flags, module)
+    #     return
+    #     # Import the sub-module containing the specified exp_config and determine
+    #     # whether the environment is single agent or multi-agent.
+    #     # non_rl part
     if hasattr(module_nonrl, flags.exp_config):
         simulate_without_rl(flags, module_nonrl)
         return
