@@ -4,7 +4,6 @@ import os
 import sys
 from time import strftime
 from copy import deepcopy
-import numpy as np
 import timeit
 import torch
 from flow.core.util import ensure_dir
@@ -46,7 +45,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=5000,
+        '--num_steps', type=int, default=1500,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -87,14 +86,14 @@ def setup_exps_rllib(flow_params,
         from ray.rllib.agents.agent import get_agent_class
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
+    import torch
     horizon = flow_params['env'].horizon
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
-        print("runnin algorithm: ", alg_run)  # "Framework: ", "torch"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         # ////////////////////////////////////////////////////////////  torch
-        config['framework'] = "torch"
+        config["framework"] = "torch"
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -109,7 +108,11 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
+        config["framework"] = "torch"
+    print("cuda is available: ", torch.cuda.is_available())
+    print('Beginning training.')
+    print("running algorithm: ", alg_run)  # "Framework: ", "torch"
+    print("==========================================")
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -166,9 +169,8 @@ def train_rllib(submodule, flags):
     # print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
+    # if you want to simulate, go ray_results
     run_experiments({flow_params["exp_tag"]: exp_config})
-    simulation = Experiment(flow_params)
-    simulation.run(num_runs=1)
 
 # simulate without rl
 
