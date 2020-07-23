@@ -54,6 +54,7 @@ def parse_args(args):
         '--no_render',
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
+
     return parser.parse_known_args(args)[0]
 # rllib
 
@@ -79,7 +80,6 @@ def setup_exps_rllib(flow_params,
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"  # for params.json output
         config["use_pytorch"] = "torch"  # Truely specify the framework
-        config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
         config["model"].update({"fcnet_hiddens": [32, 32, 32]})
@@ -93,6 +93,7 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
+        config["num_workers"] = n_cpus
         config['framework'] = "torch"  # for params.json output
         config["use_pytorch"] = "torch"  # Truely specify the framework
     print("cuda is available: ", torch.cuda.is_available())
@@ -129,7 +130,7 @@ def train_rllib(submodule, flags):
     from ray.tune import run_experiments
 
     flow_params = submodule.flow_params
-    submodule.N_cpus = flags.num_cpus
+    submodule.N_CPUS = flags.num_cpus
     print("the number of cpus: ", submodule.N_CPUS)
     n_cpus = submodule.N_CPUS
     n_rollouts = submodule.N_ROLLOUTS
@@ -140,8 +141,12 @@ def train_rllib(submodule, flags):
     alg_run, gym_name, config = setup_exps_rllib(
         flow_params, n_cpus, n_rollouts,
         policy_graphs, policy_mapping_fn, policies_to_train, flags)
-
-    ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
+    if torch.cuda.is_available() == False:
+        ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
+        print("using cpu...")
+    else:
+        ray.init(num_gpus=n_cpus*10+1, object_store_memory=200*1024*1024)
+        print("using cuda...")
     exp_config = {
         "run": alg_run,
         "env": gym_name,
@@ -155,7 +160,7 @@ def train_rllib(submodule, flags):
             "training_iteration": flags.num_steps,
         },
     }
-    print(exp_config["config"]["framework"])
+    print("Framework: ", exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     run_experiments({flow_params["exp_tag"]: exp_config})
