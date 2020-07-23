@@ -77,7 +77,8 @@ def setup_exps_rllib(flow_params,
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
+        config['framework'] = "torch"  # for params.json output
+        config["use_pytorch"] = "torch"  # Truely specify the framework
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -92,7 +93,8 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
+        config['framework'] = "torch"  # for params.json output
+        config["use_pytorch"] = "torch"  # Truely specify the framework
     print("cuda is available: ", torch.cuda.is_available())
     print('Beginning training.')
     print("==========================================")
@@ -127,7 +129,7 @@ def train_rllib(submodule, flags):
     from ray.tune import run_experiments
 
     flow_params = submodule.flow_params
-    submodule.N_CPUS = 10
+    submodule.N_cpus = flags.num_cpus
     print("the number of cpus: ", submodule.N_CPUS)
     n_cpus = submodule.N_CPUS
     n_rollouts = submodule.N_ROLLOUTS
