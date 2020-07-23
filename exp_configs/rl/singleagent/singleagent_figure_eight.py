@@ -4,7 +4,7 @@ from flow.core.params import VehicleParams, SumoCarFollowingParams
 from flow.controllers import IDMController, ContinuousRouter, RLController
 from flow.networks.figure_eight import ADDITIONAL_NET_PARAMS
 from flow.envs import AccelEnv
-from flow.networks import FigureEightNetwork
+from Network.figure_eight_network import FigureEightNetwork
 
 # time horizon of a single rollout
 HORIZON = 1500

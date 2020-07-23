@@ -46,7 +46,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=5000,
+        '--num_steps', type=int, default=1500,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -87,10 +87,10 @@ def setup_exps_rllib(flow_params,
         from ray.rllib.agents.agent import get_agent_class
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
+    import torch
     horizon = flow_params['env'].horizon
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
-        print("runnin algorithm: ", alg_run)  # "Framework: ", "torch"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         # ////////////////////////////////////////////////////////////  torch
@@ -110,6 +110,10 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
+    print("cuda is available: ", torch.cuda.is_available())
+    print('Beginning training.')
+    print("==========================================")
+    print("running algorithm: ", alg_run)  # "Framework: ", "torch"
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -163,7 +167,7 @@ def train_rllib(submodule, flags):
             "training_iteration": flags.num_steps,
         },
     }
-    # print(exp_config["config"]["framework"])
+    print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     run_experiments({flow_params["exp_tag"]: exp_config})
