@@ -4,6 +4,7 @@ import os
 import sys
 from time import strftime
 from copy import deepcopy
+import numpy as np
 import timeit
 import torch
 from flow.core.util import ensure_dir
@@ -93,7 +94,7 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         # ////////////////////////////////////////////////////////////  torch
-        config["framework"] = "torch"
+        config['framework'] = "torch"
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
@@ -108,11 +109,11 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config["framework"] = "torch"
+        config['framework'] = "torch"
     print("cuda is available: ", torch.cuda.is_available())
     print('Beginning training.')
-    print("running algorithm: ", alg_run)  # "Framework: ", "torch"
     print("==========================================")
+    print("running algorithm: ", alg_run)  # "Framework: ", "torch"
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
@@ -166,11 +167,12 @@ def train_rllib(submodule, flags):
             "training_iteration": flags.num_steps,
         },
     }
-    # print(exp_config["config"]["framework"])
+    print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
-    # if you want to simulate, go ray_results
     run_experiments({flow_params["exp_tag"]: exp_config})
+    simulation = Experiment(flow_params)
+    simulation.run(num_runs=1)
 
 # simulate without rl
 
