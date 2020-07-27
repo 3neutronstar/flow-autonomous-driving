@@ -7,6 +7,11 @@ from copy import deepcopy
 import numpy as np
 import timeit
 import torch
+
+import multiprocessing
+
+from joblib import Parallel, delayed
+from tqdm import tqdm
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
@@ -79,7 +84,6 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"  # for params.json output
-        config["use_pytorch"] = "torch"  # Truely specify the framework
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
         config["model"].update({"fcnet_hiddens": [32, 32, 32]})
@@ -89,13 +93,12 @@ def setup_exps_rllib(flow_params,
         config["num_sgd_iter"] = 10
         config["horizon"] = horizon
     elif flags.algorithm.lower() == "ddpg":
-        from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = n_cpus
         config['framework'] = "torch"  # for params.json output
-        config["use_pytorch"] = "torch"  # Truely specify the framework
+
     print("cuda is available: ", torch.cuda.is_available())
     print('Beginning training.')
     print("==========================================")
@@ -128,10 +131,12 @@ def train_rllib(submodule, flags):
     """Train policies using the PPO algorithm in RLlib."""
     import ray
     from ray.tune import run_experiments
+    start_time = timeit.default_timer()
 
     flow_params = submodule.flow_params
-    submodule.N_CPUS = flags.num_cpus
-    print("the number of cpus: ", submodule.N_CPUS)
+    if flags.num_cpus > 2:  # basic is 2 cpus, but customize over 2 is recommended
+        submodule.N_CPUS = flags.num_cpus
+    print("the number of cpus: ", flags.num_cpus)
     n_cpus = submodule.N_CPUS
     n_rollouts = submodule.N_ROLLOUTS
     policy_graphs = getattr(submodule, "POLICY_GRAPHS", None)
@@ -141,12 +146,15 @@ def train_rllib(submodule, flags):
     alg_run, gym_name, config = setup_exps_rllib(
         flow_params, n_cpus, n_rollouts,
         policy_graphs, policy_mapping_fn, policies_to_train, flags)
+
     if torch.cuda.is_available() == False:
         ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
         print("using cpu...")
-    else:
-        ray.init(num_gpus=n_cpus*10+1, object_store_memory=200*1024*1024)
+    elif torch.cuda.is_available() == True:
+        ray.init(num_gpus=n_cpus, object_store_memory=200 *
+                 1024*1024)  # gpu 1 is detected--> fix it!
         print("using cuda...")
+
     exp_config = {
         "run": alg_run,
         "env": gym_name,
@@ -163,7 +171,28 @@ def train_rllib(submodule, flags):
     print("Framework: ", exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
+    print("=================Configs=================")
+    for key in exp_config["config"].keys():
+        if key == "env_config":  # you can check env_config in exp_configs directory.
+            continue
+        # no checking None or 0 value at all.
+        elif exp_config["config"][key] == None or exp_config["config"][key] == 0:
+            continue
+        elif key == "model":  # model checking
+            print("----model config----")
+            for key_model in exp_config["config"]["model"].keys():
+                print(key_model, ":", exp_config["config"]["model"][key_model])
+                # no checking None or 0 value at all.
+                if exp_config["config"][key] == None or exp_config["config"][key] == 0:
+                    continue
+        else:
+            print(key, ":", exp_config["config"][key])
+    print("=========================================")
     run_experiments({flow_params["exp_tag"]: exp_config})
+    stop_time = timeit.default_timer()
+    run_time = stop_time-start_time
+    print("Training is Finished")
+    print("total runtime: ", run_time)
 
 
 def main(args):

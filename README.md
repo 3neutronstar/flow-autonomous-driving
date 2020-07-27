@@ -7,6 +7,8 @@
 
 ## How to Use
 
+- exploration type: stochastic gradient sampling
+
 ## non-RL examples
 
 ```shell script
