@@ -104,6 +104,7 @@ def setup_exps_rllib(flow_params,
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = n_cpus
         config['framework'] = "torch"
+        config["horizon"] = horizon
 
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
@@ -184,15 +185,15 @@ def train_rllib(submodule, flags):
         if key == "env_config":  # you can check env_config in exp_configs directory.
             continue
         # no checking None or 0 value at all.
-        # elif exp_config["config"][key] == None or exp_config["config"][key] == 0:
-        #    continue
+        elif exp_config["config"][key] == None or exp_config["config"][key] == 0:
+            continue
         elif key == "model":  # model checking
             print("----model config----")
             for key_model in exp_config["config"]["model"].keys():
                 print(key_model, ":", exp_config["config"]["model"][key_model])
                 # no checking None or 0 value at all.
-                # if exp_config["config"][key] == None or exp_config["config"][key] == 0:
-                #    continue
+                if exp_config["config"][key] == None or exp_config["config"][key] == 0:
+                    continue
         else:
             print(key, ":", exp_config["config"][key])
     print("=========================================")
