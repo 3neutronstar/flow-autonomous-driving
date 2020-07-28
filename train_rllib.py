@@ -172,7 +172,6 @@ def train_rllib(submodule, flags):
         "config": {
             **config
         },
-        "resources_per_trial" :{"cpu"=4, "gpu": 4}
         "checkpoint_freq": 20,
         "checkpoint_at_end": True,
         "max_failures": 999,
