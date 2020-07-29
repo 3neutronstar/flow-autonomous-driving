@@ -90,7 +90,7 @@ def setup_exps_rllib(flow_params,
         config["num_sgd_iter"] = 10
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
-        
+
                 # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
@@ -109,7 +109,8 @@ def setup_exps_rllib(flow_params,
             "final_scale": 1.0,
             "scale_timesteps": 1
         }
-
+        # config["opt_type"]= "adam" for impala and APPO, default is SGD
+        # TrainOneStep class call SGD -->execution_plan function can have policy update function
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
