@@ -114,6 +114,7 @@ def setup_exps_rllib(flow_params,
         config['framework'] = "torch"
         config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
+        config['n_step'] = 5
 
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
