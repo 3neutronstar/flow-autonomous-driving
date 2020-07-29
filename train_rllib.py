@@ -78,15 +78,20 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
-        config["num_workers"] = n_cpus
-        config["train_batch_size"] = horizon * n_rollouts
+        config["train_batch_size"] = horizon * \
+            n_rollouts  # NT --> N iteration * T timesteps
         config["gamma"] = 0.999  # discount rate
-        config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-        config["use_gae"] = True
-        config["lambda"] = 0.97
-        config["kl_target"] = 0.02
+        #in example config model#config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        config["model"].update({"fcnet_hiddens": [16, 16]})
+        config["use_gae"] = True  # truncated
+        config["lambda"] = 0.97  # truncated value
+        config["kl_target"] = 0.02  # d_target
+        # M is default value -->minibatch size (sgd_minibatch_size)
+        # K epoch with the number of updating theta
         config["num_sgd_iter"] = 10
+        # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
+        config["sgd_minibatch_size"]=min(16*1024,config["train_batchsize"])
                 # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
@@ -105,7 +110,8 @@ def setup_exps_rllib(flow_params,
             "final_scale": 1.0,
             "scale_timesteps": 1
         }
-
+        # config["opt_type"]= "adam" for impala and APPO, default is SGD
+        # TrainOneStep class call SGD -->execution_plan function can have policy update function
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
