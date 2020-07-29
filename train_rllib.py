@@ -81,13 +81,15 @@ def setup_exps_rllib(flow_params,
         config["num_workers"] = n_cpus
         config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
-        config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        config["model"].update({"fcnet_hiddens": [3, 3]}
+                               )  # originally 32,32,32
         config["use_gae"] = True
         config["lambda"] = 0.97
         config["kl_target"] = 0.02
         config["num_sgd_iter"] = 10
         config["horizon"] = horizon
-                # ======= exploration =======
+        config["num_workers"] = n_cpus
+        # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
             # actions (after a possible pure random phase of n timesteps).
@@ -112,8 +114,14 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
-        config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
+        config["num_workers"] = n_cpus
+        # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
+
+        # test based mountaincar continuous model
+        # config["evaluation_interval"] = 5
+        # config["exploration_config"]["final_scale"] = 0.02
+        # config["exploration_config"]["scale_timesteps"] = 40000
 
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
@@ -151,7 +159,6 @@ def train_rllib(submodule, flags):
     from ray.tune import run_experiments
     start_time = timeit.default_timer()
     flow_params = submodule.flow_params
-    submodule.N_CPUS = 10
     print("the number of cpus: ", submodule.N_CPUS)
     n_cpus = submodule.N_CPUS
     n_rollouts = submodule.N_ROLLOUTS
@@ -184,9 +191,6 @@ def train_rllib(submodule, flags):
     for key in exp_config["config"].keys():
         if key == "env_config":  # you can check env_config in exp_configs directory.
             continue
-        # no checking None or 0 value at all.
-        # elif exp_config["config"][key] == None or exp_config["config"][key] == 0:
-        #    continue
         elif key == "model":  # model checking
             print("----model config----")
             for key_model in exp_config["config"]["model"].keys():
@@ -202,7 +206,6 @@ def train_rllib(submodule, flags):
     run_time = stop_time-start_time
     print("Training is Finished")
     print("total runtime: ", run_time)
-
 
 
 def main(args):

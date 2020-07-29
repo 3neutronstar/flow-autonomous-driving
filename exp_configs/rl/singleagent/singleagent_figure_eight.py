@@ -7,7 +7,7 @@ from flow.envs import AccelEnv
 from Network.figure_eight_network import FigureEightNetwork
 
 # time horizon of a single rollout
-HORIZON = 1500
+HORIZON = 3000
 # number of rollouts per training iteration
 N_ROLLOUTS = 100
 # number of parallel workers

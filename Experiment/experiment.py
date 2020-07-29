@@ -99,9 +99,9 @@ class Experiment:
                     custom_vals[key].append(lambda_func(self.env))
                 if done:
                     break
+
                 if j % 100 == 5:
                     print(self.env.k.vehicle.get_position(veh_ids[0]))
-                    print(self.env.k.vehicle.get_x_by_id(veh_ids[0]))
                     print(self.env.k.vehicle.get_edge(veh_ids[0]))
 
             # End Operation##################################################
