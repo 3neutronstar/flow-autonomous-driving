@@ -91,7 +91,7 @@ def setup_exps_rllib(flow_params,
         config["num_sgd_iter"] = 10
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
-        config["sgd_minibatch_size"]=min(16*1024,config["train_batchsize"])
+        config["sgd_minibatch_size"]=min(16*1024,config["train_batch_size"])
                 # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
