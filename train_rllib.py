@@ -96,6 +96,24 @@ def setup_exps_rllib(flow_params,
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
         config["num_workers"] = n_cpus
+        # ======= exploration =======
+        "exploration_config": {
+            # TD3 uses simple Gaussian noise on top of deterministic NN-output
+            # actions (after a possible pure random phase of n timesteps).
+            "type": "GaussianNoise",
+            # For how many timesteps should we return completely random
+            # actions, before we start adding (scaled) noise?
+            "random_timesteps": 10000,
+            # Gaussian stddev of action noise for exploration.
+            "stddev": 0.1,
+            # Scaling settings by which the Gaussian noise is scaled before
+            # being added to the actions. NOTE: The scale timesteps start only
+            # after(!) any random steps have been finished.
+            # By default, do not anneal over time (fixed 1.0).
+            "initial_scale": 1.0,
+            "final_scale": 1.0,
+            "scale_timesteps": 1
+        }
 
         # using ddpg
     elif flags.algorithm.lower() == "ddpg":
