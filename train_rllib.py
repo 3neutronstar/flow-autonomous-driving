@@ -7,9 +7,6 @@ from copy import deepcopy
 import numpy as np
 import timeit
 import torch
-
-import multiprocessing
-
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
@@ -57,7 +54,6 @@ def parse_args(args):
         '--no_render',
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
-
     return parser.parse_known_args(args)[0]
 # rllib
 
@@ -82,21 +78,16 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
-        config["train_batch_size"] = horizon * \
-            n_rollouts  # NT --> N iteration * T timesteps
+        config["num_workers"] = n_cpus
+        config["train_batch_size"] = horizon * n_rollouts
         config["gamma"] = 0.999  # discount rate
         config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-        config["use_gae"] = True  # truncated
-        config["lambda"] = 0.97  # truncated value
-        config["kl_target"] = 0.02  # d_target
-
-        # M is default value -->minibatch size (sgd_minibatch_size)
-        # K epoch with the number of updating theta
+        config["use_gae"] = True
+        config["lambda"] = 0.97
+        config["kl_target"] = 0.02
         config["num_sgd_iter"] = 10
-        # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
-        config["num_workers"] = n_cpus
-        # ======= exploration =======
+                # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
             # actions (after a possible pure random phase of n timesteps).
@@ -115,14 +106,12 @@ def setup_exps_rllib(flow_params,
             "scale_timesteps": 1
         }
 
-        # using ddpg
     elif flags.algorithm.lower() == "ddpg":
+        from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config["num_workers"] = n_cpus
         config['framework'] = "torch"
-        config["horizon"] = horizon
         config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
 
@@ -161,11 +150,9 @@ def train_rllib(submodule, flags):
     import ray
     from ray.tune import run_experiments
     start_time = timeit.default_timer()
-
     flow_params = submodule.flow_params
-    if flags.num_cpus > 2:  # basic is 2 cpus, but customize over 2 is recommended
-        submodule.N_CPUS = flags.num_cpus
-    print("the number of cpus: ", flags.num_cpus)
+    submodule.N_CPUS = 10
+    print("the number of cpus: ", submodule.N_CPUS)
     n_cpus = submodule.N_CPUS
     n_rollouts = submodule.N_ROLLOUTS
     policy_graphs = getattr(submodule, "POLICY_GRAPHS", None)
@@ -176,14 +163,7 @@ def train_rllib(submodule, flags):
         flow_params, n_cpus, n_rollouts,
         policy_graphs, policy_mapping_fn, policies_to_train, flags)
 
-    if torch.cuda.is_available() == False:
-        ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
-        print("using cpu...")
-    elif torch.cuda.is_available() == True:
-        ray.init(num_gpus=n_cpus, object_store_memory=200 *
-                 1024*1024)  # gpu 1 is detected--> fix it!
-        print("using cuda...")
-
+    ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
     exp_config = {
         "run": alg_run,
         "env": gym_name,
@@ -197,7 +177,7 @@ def train_rllib(submodule, flags):
             "training_iteration": flags.num_steps,
         },
     }
-    print("Framework: ", exp_config["config"]["framework"])
+    print(exp_config["config"]["framework"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     print("=================Configs=================")
@@ -222,6 +202,7 @@ def train_rllib(submodule, flags):
     run_time = stop_time-start_time
     print("Training is Finished")
     print("total runtime: ", run_time)
+
 
 
 def main(args):
