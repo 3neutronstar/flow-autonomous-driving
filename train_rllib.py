@@ -78,15 +78,19 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
-        config["num_workers"] = n_cpus
-        config["train_batch_size"] = horizon * n_rollouts
+        config["train_batch_size"] = horizon * \
+            n_rollouts  # NT --> N iteration * T timesteps
         config["gamma"] = 0.999  # discount rate
         config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-        config["use_gae"] = True
-        config["lambda"] = 0.97
-        config["kl_target"] = 0.02
+        config["use_gae"] = True  # truncated
+        config["lambda"] = 0.97  # truncated value
+        config["kl_target"] = 0.02  # d_target
+        # M is default value -->minibatch size (sgd_minibatch_size)
+        # K epoch with the number of updating theta
         config["num_sgd_iter"] = 10
+        # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
+        
                 # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
