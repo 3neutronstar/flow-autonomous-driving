@@ -97,7 +97,7 @@ def setup_exps_rllib(flow_params,
         config["horizon"] = horizon
         config["num_workers"] = n_cpus
         # ======= exploration =======
-        "exploration_config": {
+        config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
             # actions (after a possible pure random phase of n timesteps).
             "type": "GaussianNoise",
