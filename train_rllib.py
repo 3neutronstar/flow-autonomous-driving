@@ -81,7 +81,8 @@ def setup_exps_rllib(flow_params,
         config["train_batch_size"] = horizon * \
             n_rollouts  # NT --> N iteration * T timesteps
         config["gamma"] = 0.999  # discount rate
-        config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        #in example config model#config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        config["model"].update({"fcnet_hiddens": [16, 16]})
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
         config["kl_target"] = 0.02  # d_target
@@ -90,7 +91,7 @@ def setup_exps_rllib(flow_params,
         config["num_sgd_iter"] = 10
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
-
+        config["sgd_minibatch_size"]=min(16*1024,config["train_batchsize"])
                 # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
