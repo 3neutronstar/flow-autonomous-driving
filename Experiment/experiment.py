@@ -100,10 +100,6 @@ class Experiment:
                 if done:
                     break
 
-                if j % 100 == 5:
-                    print(self.env.k.vehicle.get_position(veh_ids[0]))
-                    print(self.env.k.vehicle.get_edge(veh_ids[0]))
-
             # End Operation##################################################
             # Store the information from the run in info_dict.
             outflow = self.env.k.vehicle.get_outflow_rate(int(500))

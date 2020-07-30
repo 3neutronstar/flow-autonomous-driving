@@ -92,7 +92,8 @@ def setup_exps_rllib(flow_params,
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
         config["num_workers"] = n_cpus
-        config["sgd_minibatch_size"] = min(16*1024, config["train_batch_size"])
+        # min(16*1024, config["train_batch_size"])
+        config["sgd_minibatch_size"] = 128
         # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
@@ -223,7 +224,6 @@ def main(args):
         "exp_configs.rl.singleagent", fromlist=[flags.exp_config])
     module_ma = __import__(
         "exp_configs.rl.multiagent", fromlist=[flags.exp_config])
-
     # rl part
     if hasattr(module, flags.exp_config):
         submodule = getattr(module, flags.exp_config)
