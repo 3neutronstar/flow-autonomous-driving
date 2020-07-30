@@ -124,7 +124,7 @@ def setup_exps_rllib(flow_params,
         config["num_workers"] = n_cpus
         # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
-
+        config['n_step'] = 5
         # test based mountaincar continuous model
         # config["evaluation_interval"] = 5
         # config["exploration_config"]["final_scale"] = 0.02
