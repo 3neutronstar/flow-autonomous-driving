@@ -99,7 +99,7 @@ def setup_exps_rllib(flow_params,
             "type": "GaussianNoise",
             # For how many timesteps should we return completely random
             # actions, before we start adding (scaled) noise?
-            "random_timesteps": 10000,
+            "random_timesteps": 1000,
             # Gaussian stddev of action noise for exploration.
             "stddev": 0.1,
             # Scaling settings by which the Gaussian noise is scaled before
@@ -107,8 +107,8 @@ def setup_exps_rllib(flow_params,
             # after(!) any random steps have been finished.
             # By default, do not anneal over time (fixed 1.0).
             "initial_scale": 1.0,
-            "final_scale": 1.0,
-            "scale_timesteps": 1
+            "final_scale": 0.01,
+            "scale_timesteps": 1000,
         }
         # config["opt_type"]= "adam" for impala and APPO, default is SGD
         # TrainOneStep class call SGD -->execution_plan function can have policy update function
