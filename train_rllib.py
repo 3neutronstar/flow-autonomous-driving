@@ -86,7 +86,6 @@ def setup_exps_rllib(flow_params,
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
         config["kl_target"] = 0.02  # d_target
-        config["sample_batch_size"] = 200
         # M is default value -->minibatch size (sgd_minibatch_size)
         # K epoch with the number of updating theta
         config["num_sgd_iter"] = 10

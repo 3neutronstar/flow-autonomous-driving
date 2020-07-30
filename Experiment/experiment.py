@@ -99,6 +99,8 @@ class Experiment:
                     custom_vals[key].append(lambda_func(self.env))
                 if done:
                     break
+                # if j % 1000 == 20:
+                #     print(self.env.get_state())
 
             # End Operation##################################################
             # Store the information from the run in info_dict.
