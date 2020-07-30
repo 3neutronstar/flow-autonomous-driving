@@ -81,18 +81,21 @@ def setup_exps_rllib(flow_params,
         config["train_batch_size"] = horizon * \
             n_rollouts  # NT --> N iteration * T timesteps
         config["gamma"] = 0.999  # discount rate
-        #in example config model#config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        # in example config model#config["model"].update({"fcnet_hiddens": [32, 32, 32]})
         config["model"].update({"fcnet_hiddens": [16, 16]})
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
         config["kl_target"] = 0.02  # d_target
+        config["sample_batch_size"] = 200
         # M is default value -->minibatch size (sgd_minibatch_size)
         # K epoch with the number of updating theta
         config["num_sgd_iter"] = 10
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["horizon"] = horizon
-        config["sgd_minibatch_size"]=min(16*1024,config["train_batch_size"])
-                # ======= exploration =======
+        config["num_workers"] = n_cpus
+        # min(16*1024, config["train_batch_size"])
+        config["sgd_minibatch_size"] = 128
+        # ======= exploration =======
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
             # actions (after a possible pure random phase of n timesteps).
@@ -118,8 +121,14 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
-        config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
+        config["num_workers"] = n_cpus
+        # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
+
+        # test based mountaincar continuous model
+        # config["evaluation_interval"] = 5
+        # config["exploration_config"]["final_scale"] = 0.02
+        # config["exploration_config"]["scale_timesteps"] = 40000
 
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
@@ -189,9 +198,6 @@ def train_rllib(submodule, flags):
     for key in exp_config["config"].keys():
         if key == "env_config":  # you can check env_config in exp_configs directory.
             continue
-        # no checking None or 0 value at all.
-        # elif exp_config["config"][key] == None or exp_config["config"][key] == 0:
-        #    continue
         elif key == "model":  # model checking
             print("----model config----")
             for key_model in exp_config["config"]["model"].keys():
@@ -209,7 +215,6 @@ def train_rllib(submodule, flags):
     print("total runtime: ", run_time)
 
 
-
 def main(args):
     """Perform the training operations."""
     # Parse script-level arguments (not including package arguments).
@@ -220,7 +225,6 @@ def main(args):
         "exp_configs.rl.singleagent", fromlist=[flags.exp_config])
     module_ma = __import__(
         "exp_configs.rl.multiagent", fromlist=[flags.exp_config])
-
     # rl part
     if hasattr(module, flags.exp_config):
         submodule = getattr(module, flags.exp_config)
