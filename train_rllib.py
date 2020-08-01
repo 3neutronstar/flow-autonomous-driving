@@ -101,7 +101,7 @@ def setup_exps_rllib(flow_params,
             "type": "GaussianNoise",
             # For how many timesteps should we return completely random
             # actions, before we start adding (scaled) noise?
-            "random_timesteps": 1000,
+            "random_timesteps": 100000,
             # Gaussian stddev of action noise for exploration.
             "stddev": 0.1,
             # Scaling settings by which the Gaussian noise is scaled before
