@@ -86,7 +86,6 @@ def setup_exps_rllib(flow_params,
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
         config["kl_target"] = 0.02  # d_target
-        config["sample_batch_size"] = 200
         # M is default value -->minibatch size (sgd_minibatch_size)
         # K epoch with the number of updating theta
         config["num_sgd_iter"] = 10
@@ -102,7 +101,11 @@ def setup_exps_rllib(flow_params,
             "type": "GaussianNoise",
             # For how many timesteps should we return completely random
             # actions, before we start adding (scaled) noise?
+<<<<<<< HEAD
             "random_timesteps": 5000,
+=======
+            "random_timesteps": 100000,
+>>>>>>> fffa882cb226f2ad1927deb6c9e0c0cdfede9e95
             # Gaussian stddev of action noise for exploration.
             "stddev": 0.1,
             # Scaling settings by which the Gaussian noise is scaled before
@@ -124,7 +127,7 @@ def setup_exps_rllib(flow_params,
         config["num_workers"] = n_cpus
         # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
-
+        config['n_step'] = 5
         # test based mountaincar continuous model
         # config["evaluation_interval"] = 5
         # config["exploration_config"]["final_scale"] = 0.02
