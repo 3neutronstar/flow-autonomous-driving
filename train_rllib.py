@@ -82,7 +82,7 @@ def setup_exps_rllib(flow_params,
             n_rollouts  # NT --> N iteration * T timesteps
         config["gamma"] = 0.999  # discount rate
         # in example config model#config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-        config["model"].update({"fcnet_hiddens": [16, 16]})
+        config["model"].update({"fcnet_hiddens": [4, 4]})
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
         config["kl_target"] = 0.02  # d_target
@@ -102,7 +102,7 @@ def setup_exps_rllib(flow_params,
             "type": "GaussianNoise",
             # For how many timesteps should we return completely random
             # actions, before we start adding (scaled) noise?
-            "random_timesteps": 1000,
+            "random_timesteps": 5000,
             # Gaussian stddev of action noise for exploration.
             "stddev": 0.1,
             # Scaling settings by which the Gaussian noise is scaled before
@@ -110,7 +110,7 @@ def setup_exps_rllib(flow_params,
             # after(!) any random steps have been finished.
             # By default, do not anneal over time (fixed 1.0).
             "initial_scale": 1.0,
-            "final_scale": 0.01,
+            "final_scale": 0.02,
             "scale_timesteps": 1000,
         }
         # config["opt_type"]= "adam" for impala and APPO, default is SGD
