@@ -42,10 +42,10 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,
+        '--num_steps', type=int, default=200,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
-        '--rollout_size', type=int, default=100,
+        '--rollout_size', type=int, default=20,
     )  # How many steps are in a training batch.
     parser.add_argument(
         '--checkpoint_path', type=str, default=None,
@@ -101,11 +101,7 @@ def setup_exps_rllib(flow_params,
             "type": "GaussianNoise",
             # For how many timesteps should we return completely random
             # actions, before we start adding (scaled) noise?
-<<<<<<< HEAD
-            "random_timesteps": 5000,
-=======
-            "random_timesteps": 100000,
->>>>>>> fffa882cb226f2ad1927deb6c9e0c0cdfede9e95
+            "random_timesteps": 10000,
             # Gaussian stddev of action noise for exploration.
             "stddev": 0.1,
             # Scaling settings by which the Gaussian noise is scaled before
