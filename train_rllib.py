@@ -72,46 +72,21 @@ def setup_exps_rllib(flow_params,
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
     import torch
-    horizon = flow_params['env'].horizon
+    # min(16*1024, config["train_batch_size"])
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
-        config["train_batch_size"] = horizon * \
-            n_rollouts  # NT --> N iteration * T timesteps
-        config["gamma"] = 0.999  # discount rate
-        # in example config model#config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-        config["model"].update({"fcnet_hiddens": [4, 4]})
-        config["use_gae"] = True  # truncated
-        config["lambda"] = 0.97  # truncated value
-        config["kl_target"] = 0.02  # d_target
-        # M is default value -->minibatch size (sgd_minibatch_size)
-        # K epoch with the number of updating theta
-        config["num_sgd_iter"] = 10
-        # horizon: T train time steps (T time steps fixed-length trajectory)
-        config["horizon"] = horizon
-        config["num_workers"] = n_cpus
-        # min(16*1024, config["train_batch_size"])
-        config["sgd_minibatch_size"] = 128
-        # ======= exploration =======
-        config["exploration_config"] = {
-            # TD3 uses simple Gaussian noise on top of deterministic NN-output
-            # actions (after a possible pure random phase of n timesteps).
-            "type": "GaussianNoise",
-            # For how many timesteps should we return completely random
-            # actions, before we start adding (scaled) noise?
-            "random_timesteps": 100000,
-            # Gaussian stddev of action noise for exploration.
-            "stddev": 0.1,
-            # Scaling settings by which the Gaussian noise is scaled before
-            # being added to the actions. NOTE: The scale timesteps start only
-            # after(!) any random steps have been finished.
-            # By default, do not anneal over time (fixed 1.0).
-            "initial_scale": 1.0,
-            "final_scale": 0.02,
-            "scale_timesteps": 1000,
-        }
+        if flags.exp_config == "singleagent_ring":
+            from Params.ring import get_params
+            get_params(alg_run, config)
+        elif flags.exp_config == "singleagent_figure_eight":
+            from Params.figure_eight import get_params
+            get_params(alg_run, config)
+        else:
+            print("Unable to training without setting params")
+            return None
+
         # config["opt_type"]= "adam" for impala and APPO, default is SGD
         # TrainOneStep class call SGD -->execution_plan function can have policy update function
     elif flags.algorithm.lower() == "ddpg":
@@ -119,11 +94,18 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
-        config["num_workers"] = n_cpus
+        if flags.exp_config == "singleagent_ring":
+            from Params.ring import get_params
+            get_params(alg_run, config)
+        elif flags.exp_config == "singleagent_figure_eight":
+            from Params.figure_eight import get_params
+            get_params(alg_run, config)
+        else:
+            print("Unable to training without setting params")
+            return None
+
         # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
-        config['n_step'] = 5
         # test based mountaincar continuous model
         # config["evaluation_interval"] = 5
         # config["exploration_config"]["final_scale"] = 0.02
@@ -139,8 +121,16 @@ def setup_exps_rllib(flow_params,
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
+
+    # common config setting
+    horizon = flow_params['env'].horizon
+    config["train_batch_size"] = horizon * \
+        n_rollouts  # NT --> N iteration * T timesteps
+    config["horizon"] = horizon
+    config['framework'] = "torch"
     config['env_config']['flow_params'] = flow_json
     config['env_config']['run'] = alg_run
+    config["num_workers"] = n_cpus
 
     # multiagent configuration
     if policy_graphs is not None:
