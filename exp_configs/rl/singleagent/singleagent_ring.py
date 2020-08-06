@@ -64,6 +64,7 @@ flow_params = dict(
             "max_decel": 1,
             "ring_length": [220, 270],
         },
+        evaluate=True,
     ),
 
     # network-related parameters (see flow.core.params.NetParams and the
