@@ -35,4 +35,5 @@ def get_params(alg, config):
 
     elif alg == "DDPG":
         config['n_step'] = 5
+
         return config
