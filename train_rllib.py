@@ -86,6 +86,7 @@ def setup_exps_rllib(flow_params,
         else:
             print("Unable to training without setting params")
             return None
+        config["num_workers"] = n_cpus
 
         # config["opt_type"]= "adam" for impala and APPO, default is SGD
         # TrainOneStep class call SGD -->execution_plan function can have policy update function
@@ -130,7 +131,6 @@ def setup_exps_rllib(flow_params,
     config['framework'] = "torch"
     config['env_config']['flow_params'] = flow_json
     config['env_config']['run'] = alg_run
-    config["num_workers"] = n_cpus
 
     # multiagent configuration
     if policy_graphs is not None:
