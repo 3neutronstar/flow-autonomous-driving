@@ -200,20 +200,10 @@ def simulate_without_rl(flags, module):
 
     # Run for the specified number of rollouts.
 
-    flow_params['env'].horizon = 1500
+    flow_params['env'].horizon = 3000
     # Create the experiment object.
     exp = Experiment(flow_params, callables)
     exp.run(flags.num_runs, convert_to_csv=flags.gen_emission)
-    # edge and node check
-    # if flags.osm_output.lower() == "true":
-    #     edge, junction = exp.env.k.network.generate_net_from_osm(
-    #         flow_params['net'])
-    #     print(edge)
-    #     print(junction)
-# test
-
-# stablebaseline_ddpg
-
 
 def run_model_stablebaseline3(flow_params,
                               num_cpus=1,
