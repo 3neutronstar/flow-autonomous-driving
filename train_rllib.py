@@ -141,6 +141,7 @@ def setup_exps_rllib(flow_params,
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
     config['env_config']['flow_params'] = flow_json
     config['env_config']['run'] = alg_run
+    config["num_workers"] = n_cpus
 
     # multiagent configuration
     if policy_graphs is not None:
