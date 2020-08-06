@@ -3,7 +3,7 @@ from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.core.params import VehicleParams, SumoCarFollowingParams
 from flow.controllers import IDMController, ContinuousRouter, RLController
 from flow.networks.figure_eight import ADDITIONAL_NET_PARAMS
-from flow.envs import AccelEnv
+from flow.envs import WaveAttenuationPOEnv
 from Network.figure_eight_network import FigureEightNetwork
 
 # time horizon of a single rollout
@@ -41,7 +41,7 @@ flow_params = dict(
     exp_tag='singleagent_figure_eight',
 
     # name of the flow environment the experiment is running on
-    env_name=AccelEnv,
+    env_name=WaveAttenuationPOEnv,
 
     # name of the network class the experiment is running on
     network=FigureEightNetwork,

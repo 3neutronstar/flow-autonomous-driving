@@ -42,10 +42,10 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,
+        '--num_steps', type=int, default=200,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
-        '--rollout_size', type=int, default=100,
+        '--rollout_size', type=int, default=20,
     )  # How many steps are in a training batch.
     parser.add_argument(
         '--checkpoint_path', type=str, default=None,
