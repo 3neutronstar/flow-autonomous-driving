@@ -81,6 +81,7 @@ def setup_exps_rllib(flow_params,
     config['n_step'] = 1
     # model
     config['actor_hiddens'] = [64, 64]
+    config['actor_lr'] = 0.0001  # in article 'ddpg'
     config['critic_hiddens'] = [64, 64]
     config['gamma'] = 0.99
     config['train_batch_size'] = 64
