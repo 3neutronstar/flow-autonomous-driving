@@ -42,10 +42,10 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=200,
+        '--num_steps', type=int, default=1500,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
-        '--rollout_size', type=int, default=20,
+        '--rollout_size', type=int, default=100,
     )  # How many steps are in a training batch.
     parser.add_argument(
         '--checkpoint_path', type=str, default=None,
@@ -72,51 +72,49 @@ def setup_exps_rllib(flow_params,
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
     import torch
-
     horizon = flow_params['env'].horizon
-
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        if flags.exp_config == "singleagent_ring":
-            from Params.ring import get_params
-            get_params(alg_run, config)
-        elif flags.exp_config == "singleagent_figure_eight":
-            from Params.figure_eight import get_params
-            get_params(alg_run, config)
-        else:
-            print("Unable to training without setting params")
-            return None
-        config["train_batch_size"] = horizon * \
-            n_rollouts  # NT --> N iteration * T timesteps
+        config['framework'] = "torch"
         config["num_workers"] = n_cpus
+        config["train_batch_size"] = horizon * n_rollouts
+        config["gamma"] = 0.999  # discount rate
+        config["model"].update({"fcnet_hiddens": [32, 32, 32]})
+        config["use_gae"] = True
+        config["lambda"] = 0.97
+        config["kl_target"] = 0.02
+        config["num_sgd_iter"] = 10
         config["horizon"] = horizon
+        # ======= exploration =======
+        config["exploration_config"] = {
+            # TD3 uses simple Gaussian noise on top of deterministic NN-output
+            # actions (after a possible pure random phase of n timesteps).
+            "type": "GaussianNoise",
+            # For how many timesteps should we return completely random
+            # actions, before we start adding (scaled) noise?
+            "random_timesteps": 10000,
+            # Gaussian stddev of action noise for exploration.
+            "stddev": 0.1,
+            # Scaling settings by which the Gaussian noise is scaled before
+            # being added to the actions. NOTE: The scale timesteps start only
+            # after(!) any random steps have been finished.
+            # By default, do not anneal over time (fixed 1.0).
+            "initial_scale": 1.0,
+            "final_scale": 1.0,
+            "scale_timesteps": 1
+        }
 
-        # config["opt_type"]= "adam" for impala and APPO, default is SGD
-        # TrainOneStep class call SGD -->execution_plan function can have policy update function
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config["horizon"] = horizon
-        if flags.exp_config == "singleagent_ring":
-            from Params.ring import get_params
-            get_params(alg_run, config)
-        elif flags.exp_config == "singleagent_figure_eight":
-            from Params.figure_eight import get_params
-            get_params(alg_run, config)
-        else:
-            print("Unable to training without setting params")
-            return None
-
-        # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
+        config['framework'] = "torch"
+        config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
-        # test based mountaincar continuous model
-        # config["evaluation_interval"] = 5
-        # config["exploration_config"]["final_scale"] = 0.02
-        # config["exploration_config"]["scale_timesteps"] = 40000
+        config['n_step'] = 5
 
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
@@ -128,9 +126,6 @@ def setup_exps_rllib(flow_params,
     # save the flow params for replay
     flow_json = json.dumps(
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
-
-    # common config setting
-    config['framework'] = "torch"
     config['env_config']['flow_params'] = flow_json
     config['env_config']['run'] = alg_run
 
@@ -189,6 +184,9 @@ def train_rllib(submodule, flags):
     for key in exp_config["config"].keys():
         if key == "env_config":  # you can check env_config in exp_configs directory.
             continue
+        # no checking None or 0 value at all.
+        # elif exp_config["config"][key] == None or exp_config["config"][key] == 0:
+        #    continue
         elif key == "model":  # model checking
             print("----model config----")
             for key_model in exp_config["config"]["model"].keys():
@@ -216,6 +214,7 @@ def main(args):
         "exp_configs.rl.singleagent", fromlist=[flags.exp_config])
     module_ma = __import__(
         "exp_configs.rl.multiagent", fromlist=[flags.exp_config])
+
     # rl part
     if hasattr(module, flags.exp_config):
         submodule = getattr(module, flags.exp_config)
