@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,
+        '--num_steps', type=int, default=500,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -85,6 +85,7 @@ def setup_exps_rllib(flow_params,
     config['critic_hiddens'] = [64, 64]
     config['gamma'] = 0.99
     config['train_batch_size'] = 64
+    config['model']['fcnet_hiddens'] = [64, 64]
     # exploration
     config['exploration_config']['final_scale'] = 0.02
     config['exploration_config']['scale_timesteps'] = 10000
