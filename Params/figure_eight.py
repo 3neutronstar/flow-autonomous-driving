@@ -41,4 +41,5 @@ def get_params(alg, config):
         # config["evaluation_interval"] = 5
         # config["exploration_config"]["final_scale"] = 0.02
         # config["exploration_config"]["scale_timesteps"] = 40000
+        config['train_batch_size'] = 256
         return config

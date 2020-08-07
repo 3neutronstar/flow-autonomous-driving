@@ -110,7 +110,7 @@ def setup_exps_rllib(flow_params,
         else:
             print("Unable to training without setting params")
             return None
-        config['train_batch_size'] = 256
+
         # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
         # test based mountaincar continuous model
