@@ -15,5 +15,8 @@ def get_params(alg, config):
 
     elif alg == "ddpg":
         config['n_step'] = 5
+        config['actor_hiddens'] = [64, 64]
+        config['critic_hiddens'] = [64, 64]
+        config['gamma'] = 0.99
 
         return config

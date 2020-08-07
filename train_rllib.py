@@ -72,7 +72,10 @@ def setup_exps_rllib(flow_params,
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
     import torch
-    # min(16*1024, config["train_batch_size"])
+
+    horizon = flow_params['env'].horizon
+    config["horizon"] = horizon
+
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
@@ -86,6 +89,8 @@ def setup_exps_rllib(flow_params,
         else:
             print("Unable to training without setting params")
             return None
+        config["train_batch_size"] = horizon * \
+            n_rollouts  # NT --> N iteration * T timesteps
         config["num_workers"] = n_cpus
 
         # config["opt_type"]= "adam" for impala and APPO, default is SGD
@@ -104,7 +109,7 @@ def setup_exps_rllib(flow_params,
         else:
             print("Unable to training without setting params")
             return None
-
+        config['train_batch_size'] = 256
         # config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
         # test based mountaincar continuous model
@@ -124,10 +129,6 @@ def setup_exps_rllib(flow_params,
         flow_params, cls=FlowParamsEncoder, sort_keys=True, indent=4)
 
     # common config setting
-    horizon = flow_params['env'].horizon
-    config["train_batch_size"] = horizon * \
-        n_rollouts  # NT --> N iteration * T timesteps
-    config["horizon"] = horizon
     config['framework'] = "torch"
     config['env_config']['flow_params'] = flow_json
     config['env_config']['run'] = alg_run
