@@ -74,7 +74,6 @@ def setup_exps_rllib(flow_params,
     import torch
 
     horizon = flow_params['env'].horizon
-    config["horizon"] = horizon
 
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
@@ -92,6 +91,7 @@ def setup_exps_rllib(flow_params,
         config["train_batch_size"] = horizon * \
             n_rollouts  # NT --> N iteration * T timesteps
         config["num_workers"] = n_cpus
+        config["horizon"] = horizon
 
         # config["opt_type"]= "adam" for impala and APPO, default is SGD
         # TrainOneStep class call SGD -->execution_plan function can have policy update function
@@ -100,6 +100,7 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
+        config["horizon"] = horizon
         if flags.exp_config == "singleagent_ring":
             from Params.ring import get_params
             get_params(alg_run, config)
