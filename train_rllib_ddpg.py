@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,
+        '--num_steps', type=int, default=100,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -80,22 +80,25 @@ def setup_exps_rllib(flow_params,
     config['framework'] = "torch"
     config['n_step'] = 1
     # model
-    config['actor_hiddens'] = [64, 64]
-    config['critic_hiddens'] = [64, 64]
+    config['actor_hiddens'] = [400, 300]
+    config['actor_lr'] = 0.0001  # in article 'ddpg'
+    config['critic_hiddens'] = [400, 300]
     config['gamma'] = 0.99
-    config['train_batch_size'] = 64
+    config['model']['fcnet_hiddens'] = [64, 64]
     # exploration
     config['exploration_config']['final_scale'] = 0.02
-    config['exploration_config']['scale_timesteps'] = 10000
+    config['exploration_config']['scale_timesteps'] = 100000
     config['exploration_config']['ou_base_scale'] = 0.1
     config['exploration_config']['ou_theta'] = 0.15
     config['exploration_config']['ou_sigma'] = 0.2
     # optimization
     config['tau'] = 0.001
-    config['train_batch_size'] = 64
-    config['learning_starts'] = 500
+    config['l2_reg'] = 1e-2
+    config['train_batch_size'] = 1024
+    config['learning_starts'] = 3000
     # evaluation
     #config['evaluation_interval'] = 5
+    config['buffer_size'] = 100000
     config['timesteps_per_iteration'] = 3000
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function

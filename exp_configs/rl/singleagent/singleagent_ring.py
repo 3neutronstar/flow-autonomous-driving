@@ -5,7 +5,7 @@ vehicles in a variable length ring road.
 """
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.core.params import VehicleParams, SumoCarFollowingParams
-from flow.controllers import RLController, BCMController, ContinuousRouter
+from flow.controllers import RLController, IDMController, ContinuousRouter
 from flow.envs import WaveAttenuationPOEnv
 from flow.networks import RingNetwork
 
@@ -20,7 +20,7 @@ N_CPUS = 2
 vehicles = VehicleParams()
 vehicles.add(
     veh_id="human",
-    acceleration_controller=(BCMController, {
+    acceleration_controller=(IDMController, {
         "noise": 0.2
     }),
     car_following_params=SumoCarFollowingParams(
