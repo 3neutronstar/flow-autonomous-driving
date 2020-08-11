@@ -87,7 +87,7 @@ def setup_exps_rllib(flow_params,
         # K epoch with the number of updating theta
         config["num_sgd_iter"] = 15
         # horizon: T train time steps (T time steps fixed-length trajectory)
-        config["sgd_minibatch_size"] = 1024
+        config["sgd_minibatch_size"] = 2048
         config["clip_param"] = 0.2
         config["horizon"] = horizon
 
