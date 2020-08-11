@@ -77,6 +77,7 @@ def setup_exps_rllib(flow_params,
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
+        config["num_workers"] = n_cpus
         config['framework'] = "torch"
         config["gamma"] = 0.99  # discount rate
         config["use_gae"] = True  # truncated
