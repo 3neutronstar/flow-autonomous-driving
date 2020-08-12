@@ -80,9 +80,9 @@ def setup_exps_rllib(flow_params,
     config['framework'] = "torch"
     config['n_step'] = 1
     # model
-    config['actor_hiddens'] = [400, 300]
+    config['actor_hiddens'] = [64, 64]
     config['actor_lr'] = 0.0001  # in article 'ddpg'
-    config['critic_hiddens'] = [400, 300]
+    config['critic_hiddens'] = [64, 64]
     config['gamma'] = 0.99
     config['model']['fcnet_hiddens'] = [64, 64]
     # exploration
