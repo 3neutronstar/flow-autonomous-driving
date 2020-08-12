@@ -78,7 +78,7 @@ def setup_exps_rllib(flow_params,
     agent_cls = get_agent_class(alg_run)
     config = deepcopy(agent_cls._default_config)
     config['framework'] = "torch"
-    config['n_step'] = 1
+    config['n_step'] = 5
     # model
     config['actor_hiddens'] = [64, 64]
     config['actor_lr'] = 0.0001  # in article 'ddpg'
@@ -94,7 +94,7 @@ def setup_exps_rllib(flow_params,
     # optimization
     config['tau'] = 0.001
     config['l2_reg'] = 1e-2
-    config['train_batch_size'] = 1024
+    config['train_batch_size'] = 256
     config['learning_starts'] = 3000
     # evaluation
     #config['evaluation_interval'] = 5
