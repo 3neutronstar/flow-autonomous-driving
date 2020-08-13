@@ -77,9 +77,15 @@ def setup_exps_rllib(flow_params,
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
+<<<<<<< HEAD
         config['framework'] = "torch"
         config["num_wokers"] = n_cpus
         config["gamma"] = 0.99  # discount rate - 1
+=======
+        config["num_workers"] = n_cpus
+        config['framework'] = "torch"
+        config["gamma"] = 0.99  # discount rate
+>>>>>>> d1b58d149d7a62f3d0ce5faef4667bf43bd7267d
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
         config["kl_target"] = 0.02  # d_target
@@ -87,7 +93,11 @@ def setup_exps_rllib(flow_params,
         # K epoch with the number of updating theta
         config["num_sgd_iter"] = 15
         # horizon: T train time steps (T time steps fixed-length trajectory)
+<<<<<<< HEAD
         config["sgd_minibatch_size"] = 1024
+=======
+        config["sgd_minibatch_size"] = 2048
+>>>>>>> d1b58d149d7a62f3d0ce5faef4667bf43bd7267d
         config["clip_param"] = 0.2
         config["horizon"] = horizon
 
