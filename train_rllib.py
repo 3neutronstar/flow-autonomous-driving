@@ -91,7 +91,7 @@ def setup_exps_rllib(flow_params,
         config["exploration_config"] = {
             # TD3 uses simple Gaussian noise on top of deterministic NN-output
             # actions (after a possible pure random phase of n timesteps).
-            "type": "GaussianNoise",
+            "type": "StochasticSampling",
             # For how many timesteps should we return completely random
             # actions, before we start adding (scaled) noise?
             "random_timesteps": 10000,
