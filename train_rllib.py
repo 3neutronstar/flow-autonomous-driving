@@ -78,7 +78,7 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
-        config["num_wokers"] = n_cpus
+        config["num_workers"] = n_cpus
         config["gamma"] = 0.99  # discount rate - 1
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
@@ -88,7 +88,7 @@ def setup_exps_rllib(flow_params,
         config["num_sgd_iter"] = 15
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["sgd_minibatch_size"] = 1024
-        config["clip_param"] = 0.2
+        config["clip_param"] = 0.1
         config["horizon"] = horizon
 
     elif flags.algorithm.lower() == "ddpg":
