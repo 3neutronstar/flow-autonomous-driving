@@ -77,34 +77,19 @@ def setup_exps_rllib(flow_params,
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
         config["num_workers"] = n_cpus
-        config["train_batch_size"] = horizon * n_rollouts
-        config["gamma"] = 0.999  # discount rate
-        config["model"].update({"fcnet_hiddens": [32, 32, 32]})
-        config["use_gae"] = True
-        config["lambda"] = 0.97
-        config["kl_target"] = 0.02
-        config["num_sgd_iter"] = 10
+        config['framework'] = "torch"
+        config["gamma"] = 0.99  # discount rate - 1
+        config["use_gae"] = True  # truncated
+        config["lambda"] = 0.97  # truncated value
+        config["kl_target"] = 0.02  # d_target
+        # M is default value -->minibatch size (sgd_minibatch_size)
+        # K epoch with the number of updating theta
+        config["num_sgd_iter"] = 15
+        # horizon: T train time steps (T time steps fixed-length trajectory)
+        config["sgd_minibatch_size"] = 1024
+        config["clip_param"] = 0.1
         config["horizon"] = horizon
-        # ======= exploration =======
-        config["exploration_config"] = {
-            # TD3 uses simple Gaussian noise on top of deterministic NN-output
-            # actions (after a possible pure random phase of n timesteps).
-            "type": "StochasticSampling",
-            # For how many timesteps should we return completely random
-            # actions, before we start adding (scaled) noise?
-            "random_timesteps": 10000,
-            # Gaussian stddev of action noise for exploration.
-            "stddev": 0.1,
-            # Scaling settings by which the Gaussian noise is scaled before
-            # being added to the actions. NOTE: The scale timesteps start only
-            # after(!) any random steps have been finished.
-            # By default, do not anneal over time (fixed 1.0).
-            "initial_scale": 1.0,
-            "final_scale": 1.0,
-            "scale_timesteps": 1
-        }
 
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
