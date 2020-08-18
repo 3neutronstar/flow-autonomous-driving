@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=100,
+        '--num_steps', type=int, default=200,
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -79,6 +79,7 @@ def setup_exps_rllib(flow_params,
     config = deepcopy(agent_cls._default_config)
     config['framework'] = "torch"
     config['n_step'] = 1
+    config["num_workers"] = 1
     # model
     config['actor_hiddens'] = [64, 64]
     config['actor_lr'] = 0.0001  # in article 'ddpg'
@@ -97,7 +98,7 @@ def setup_exps_rllib(flow_params,
     config['tau'] = 0.002
     config['l2_reg'] = 1e-6
     config['train_batch_size'] = 64
-    config['learning_starts'] = 500
+    config['learning_starts'] = 3000
     # evaluation
     #config['evaluation_interval'] = 5
     config['buffer_size'] = 50000
