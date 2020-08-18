@@ -79,6 +79,7 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
+        config['num_workers']=n_cpus
         config["gamma"] = 0.99  # discount rate
         config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
@@ -89,8 +90,7 @@ def setup_exps_rllib(flow_params,
         # horizon: T train time steps (T time steps fixed-length trajectory)
         config["clip_param"] = 0.2
         config["horizon"] = horizon
-        config["sgd_minibatch_size"] = 4096
-        config["train_batch_size"] = 8000
+        config["sgd_minibatch_size"] = 128
 
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
@@ -101,7 +101,15 @@ def setup_exps_rllib(flow_params,
         config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
         # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
         config['n_step'] = 5
-
+    
+    config['callbacks'] = {
+        "on_episode_end": None,
+        "on_episode_start": None,
+        "on_episode_step": None,
+        "on_postprocess_traj": None,
+        "on_sample_end": None,
+        "on_train_result": None
+    }  
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
     print("cuda is available: ", torch.cuda.is_available())
