@@ -1,13 +1,12 @@
 # flow-autonomous-driving
 
-### Requirement
+### Requirement(Installment)
 
-- flow-project : https://github.com/flow-project/flow
 - anaconda : https://anaconda.com/
-
+- flow-project : https://github.com/flow-project/flow
+- ray-project(rllib) : https://github.com/ray-project/ray (need at least 0.8.6 is needed)
+- pytorch : https://pytorch.org/
 ## How to Use
-
-- exploration type: stochastic gradient sampling
 
 ## non-RL examples
 
@@ -17,6 +16,7 @@ python simulate.py EXP_CONFIG
 
 where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/non_rl.`
 
+If you want to run with options, use
 ```shell script
  python simulate.py EXP_CONFIG --num_runs n --no_render --gen_emission
 ```
@@ -31,7 +31,7 @@ python train_rllib.py EXP_CONFIG
 
 where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent` or `exp_configs/rl/multiagent.`
 
-### stable-baselines3 (for only singel agent)
+### stable-baselines3 (for only single agent) -> deprecated
 
 traffic light agents being trained through RL algorithms provided by OpenAI _stable-baselines3_ by pytorch.
 
@@ -50,4 +50,29 @@ python simulate.py osm_test
 
 After that, If you want to see those output file(XML), you could find in '~/flow/flow/core/kernel/debug/cfg/~.net.cfg'
 
+
+## Visualizing
+If you want to visualizing after training by rllib(ray), follow this.
+```shell script ~ray_results/EXP_CONFIG/experiment_name/```have _params.json_ file.
+Open it and change the "callbacks" value.
+Replace ```shell script "callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",``` to following blocks.
+---------------
+"callbacks": {
+    "on_episode_end": null,
+    "on_episode_start": null,
+    "on_episode_step": null,
+    "on_postprocess_traj": null,
+    "on_sample_end": null,
+    "on_train_result": null
+  },
+---------------
+After replacing the "callbacks" block, 
+1. ```shell script conda activate flow``` to activate flow environment.
+2. ```shell script python ~/flow-autonomous-driving/visualizer_rllib.py ~/home/user/ray_results/EXP_CONFIG/experiment_name/ number_of_checkpoints```
+
 ## Contributors
+`BMIL in Soongsil Univ.`
+Prof. Kwon (Minhae Kwon)
+Minsoo Kang
+Gihong Lee
+Hyeonju Lim
