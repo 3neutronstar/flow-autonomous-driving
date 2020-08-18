@@ -80,17 +80,17 @@ def setup_exps_rllib(flow_params,
         config = deepcopy(agent_cls._default_config)
         config['framework'] = "torch"
         config['num_workers']=n_cpus
-        config["gamma"] = 0.99  # discount rate
-        config["use_gae"] = True  # truncated
-        config["lambda"] = 0.97  # truncated value
-        config["kl_target"] = 0.02  # d_target
-        # M is default value -->minibatch size (sgd_minibatch_size)
-        # K epoch with the number of updating theta
-        config["num_sgd_iter"] = 15
-        # horizon: T train time steps (T time steps fixed-length trajectory)
-        config["clip_param"] = 0.2
-        config["horizon"] = horizon
-        config["sgd_minibatch_size"] = 128
+        # config["gamma"] = 0.99  # discount rate
+        # config["use_gae"] = True  # truncated
+        # config["lambda"] = 0.97  # truncated value
+        # config["kl_target"] = 0.02  # d_target
+        # # M is default value -->minibatch size (sgd_minibatch_size)
+        # # K epoch with the number of updating theta
+        # config["num_sgd_iter"] = 15
+        # # horizon: T train time steps (T time steps fixed-length trajectory)
+        # config["clip_param"] = 0.2
+        # config["horizon"] = horizon
+        # config["sgd_minibatch_size"] = 128
         config['exploration_config']["type"]="GaussianNoise"
         config['exploration_config']["final_scale"]=0.05
         config['exploration_config']["initial_scale"]=1.0
