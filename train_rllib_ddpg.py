@@ -82,7 +82,11 @@ def setup_exps_rllib(flow_params,
     # model
     config['actor_hiddens'] = [64, 64]
     config['actor_lr'] = 0.0001  # in article 'ddpg'
+<<<<<<< HEAD
     config['critic_lr'] = 0.001
+=======
+    config['critic_lr'] = 0.0005
+>>>>>>> ef12c27c3c8ce883ab35e30deb9c7c78c7a0742e
     config['critic_hiddens'] = [64, 64]
     config['gamma'] = 0.99
     config['model']['fcnet_hiddens'] = [64, 64]
@@ -96,11 +100,23 @@ def setup_exps_rllib(flow_params,
     config['tau'] = 0.001
     config['l2_reg'] = 1e-6
     config['train_batch_size'] = 64
+<<<<<<< HEAD
     config['learning_starts'] = 500
+=======
+    config['learning_starts'] = 3000
+>>>>>>> ef12c27c3c8ce883ab35e30deb9c7c78c7a0742e
     # evaluation
     #config['evaluation_interval'] = 5
     config['buffer_size'] = 100000
     config['timesteps_per_iteration'] = 3000
+    config['callbacks'] = {
+        "on_episode_end": None,
+        "on_episode_start": None,
+        "on_episode_step": None,
+        "on_postprocess_traj": None,
+        "on_sample_end": None,
+        "on_train_result": None
+    }
     # config["opt_type"]= "adam" for impala and APPO, default is SGD
     # TrainOneStep class call SGD -->execution_plan function can have policy update function
     print("cuda is available: ", torch.cuda.is_available())
