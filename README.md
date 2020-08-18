@@ -52,25 +52,9 @@ After that, If you want to see those output file(XML), you could find in `~/flow
 
 
 ## Visualizing
-If you want to visualizing after training by rllib(ray), follow this.
-```~ray_results/EXP_CONFIG/experiment_name/```have _params.json_ file.
-Open it and change the "callbacks" value.
-Replace ```"callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",``` to following blocks.
-
-```shell script
-"callbacks": {
-    "on_episode_end": null,
-    "on_episode_start": null,
-    "on_episode_step": null,
-    "on_postprocess_traj": null,
-    "on_sample_end": null,
-    "on_train_result": null
-  },
-```
-
-After replacing the "callbacks" block, 
-First, ```conda activate flow``` to activate flow environment.
-Second,
+If you want to visualizing after training by rllib(ray), 
+- First, ```conda activate flow``` to activate flow environment.
+- Second,
 ```shell script
 python ~/flow-autonomous-driving/visualizer_rllib.py 
 ~/home/user/ray_results/EXP_CONFIG/experiment_name/ number_of_checkpoints
