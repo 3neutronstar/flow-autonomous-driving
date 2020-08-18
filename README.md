@@ -56,7 +56,7 @@ If you want to visualizing after training by rllib(ray), follow this.
 ```shell script ~ray_results/EXP_CONFIG/experiment_name/```have _params.json_ file.
 Open it and change the "callbacks" value.
 Replace ```shell script "callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",``` to following blocks.
----------------
+
 "callbacks": {
     "on_episode_end": null,
     "on_episode_start": null,
@@ -65,10 +65,13 @@ Replace ```shell script "callbacks":"<class 'ray.rllib.agents.callbacks.DefaultC
     "on_sample_end": null,
     "on_train_result": null
   },
----------------
+
 After replacing the "callbacks" block, 
 1. ```shell script conda activate flow``` to activate flow environment.
-2. ```shell script python ~/flow-autonomous-driving/visualizer_rllib.py ~/home/user/ray_results/EXP_CONFIG/experiment_name/ number_of_checkpoints```
+2. ```shell script 
+python ~/flow-autonomous-driving/visualizer_rllib.py 
+~/home/user/ray_results/EXP_CONFIG/experiment_name/ number_of_checkpoints
+```
 
 ## Contributors
 `BMIL in Soongsil Univ.`
