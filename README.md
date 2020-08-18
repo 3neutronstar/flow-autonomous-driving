@@ -48,14 +48,14 @@ You want to see their results, run this code.
 python simulate.py osm_test
 ```
 
-After that, If you want to see those output file(XML), you could find in '~/flow/flow/core/kernel/debug/cfg/~.net.cfg'
+After that, If you want to see those output file(XML), you could find in `~/flow/flow/core/kernel/debug/cfg/.net.cfg`
 
 
 ## Visualizing
 If you want to visualizing after training by rllib(ray), follow this.
-```shell script ~ray_results/EXP_CONFIG/experiment_name/```have _params.json_ file.
+```~ray_results/EXP_CONFIG/experiment_name/```have _params.json_ file.
 Open it and change the "callbacks" value.
-Replace ```shell script "callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",``` to following blocks.
+Replace ```"callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",``` to following blocks.
 
 "callbacks": {
     "on_episode_end": null,
@@ -67,8 +67,9 @@ Replace ```shell script "callbacks":"<class 'ray.rllib.agents.callbacks.DefaultC
   },
 
 After replacing the "callbacks" block, 
-1. ```shell script conda activate flow``` to activate flow environment.
-2. ```shell script 
+First, ```conda activate flow``` to activate flow environment.
+Second,
+```shell script
 python ~/flow-autonomous-driving/visualizer_rllib.py 
 ~/home/user/ray_results/EXP_CONFIG/experiment_name/ number_of_checkpoints
 ```
