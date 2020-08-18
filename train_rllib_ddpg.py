@@ -85,22 +85,22 @@ def setup_exps_rllib(flow_params,
     config['critic_lr'] = 0.001
     config['critic_hiddens'] = [64, 64]
     config['gamma'] = 0.99
-    config['lr']=1e-5
     config['model']['fcnet_hiddens'] = [64, 64]
+    config['lr']=1e-4
     # exploration
     config['exploration_config']['final_scale'] = 0.02
-    config['exploration_config']['scale_timesteps'] = 270000
+    config['exploration_config']['scale_timesteps'] = 100000
     config['exploration_config']['ou_base_scale'] = 0.1
     config['exploration_config']['ou_theta'] = 0.15
     config['exploration_config']['ou_sigma'] = 0.2
     # optimization
-    config['tau'] = 0.001
+    config['tau'] = 0.002
     config['l2_reg'] = 1e-6
     config['train_batch_size'] = 64
-    config['learning_starts'] = 3000
+    config['learning_starts'] = 500
     # evaluation
     #config['evaluation_interval'] = 5
-    config['buffer_size'] = 100000
+    config['buffer_size'] = 50000
     config['timesteps_per_iteration'] = 3000
     config['callbacks'] = {
         "on_episode_end": None,
