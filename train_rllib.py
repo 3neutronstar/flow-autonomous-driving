@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,
+        '--num_steps', type=int, default=1500,  # iteration
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -67,30 +67,30 @@ def setup_exps_rllib(flow_params,
                      flags=None):
     from ray import tune
     from ray.tune.registry import register_env
-    from ray.rllib.utils.schedules.piecewise_schedule import PiecewiseSchedule
     try:
         from ray.rllib.agents.agent import get_agent_class
     except ImportError:
         from ray.rllib.agents.registry import get_agent_class
     import torch
-    horizon = flow_params['env'].horizon    
+    horizon = flow_params['env'].horizon
     if flags.algorithm.lower() == "ppo":
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
-        config['num_workers']=n_cpus
-        config["gamma"] = 0.99  # discount rate
-        config["use_gae"] = True  # truncated
+        config['framework']='torch'
+        config["num_workers"] = n_cpus
+        # config["gamma"] = 0.99  # discount rate - 1
+        # config["use_gae"] = True  # truncated
         config["lambda"] = 0.97  # truncated value
-        config["kl_target"] = 0.02  # d_target
-        # M is default value -->minibatch size (sgd_minibatch_size)
-        # K epoch with the number of updating theta
-        config["num_sgd_iter"] = 15
-        # horizon: T train time steps (T time steps fixed-length trajectory)
-        config["clip_param"] = 0.2
-        config["horizon"] = horizon
+        # config["kl_target"] = 0.02  # d_target
+        # # M is default value -->minibatch size (sgd_minibatch_size)
+        # # K epoch with the number of updating theta
+        # config["num_sgd_iter"] = 15
+        # # horizon: T train time steps (T time steps fixed-length trajectory)
         config["sgd_minibatch_size"] = 128
+        # config["clip_param"] = 0.2
+        # config["horizon"] = horizon
+        # config["sgd_minibatch_size"] = 128
         config['exploration_config']["type"]="GaussianNoise"
         config['exploration_config']["final_scale"]=0.05
         config['exploration_config']["initial_scale"]=1.0
