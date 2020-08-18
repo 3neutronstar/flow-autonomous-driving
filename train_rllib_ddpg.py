@@ -94,7 +94,7 @@ def setup_exps_rllib(flow_params,
     config['exploration_config']['ou_sigma'] = 0.2
     # optimization
     config['tau'] = 0.001
-    config['l2_reg'] = 1e-5
+    config['l2_reg'] = 1e-6
     config['train_batch_size'] = 64
     config['learning_starts'] = 3000
     # evaluation
