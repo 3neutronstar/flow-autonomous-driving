@@ -95,6 +95,8 @@ def setup_exps_rllib(flow_params,
         config['exploration_config']["final_scale"]=0.05
         config['exploration_config']["initial_scale"]=1.0
         config['exploration_config']["scale_timesteps"]=100000
+        config['exploration_config']["random_timesteps"]=1000
+        config['exploration_config']["stddev"]=0.1
 
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
