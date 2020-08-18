@@ -57,6 +57,7 @@ If you want to visualizing after training by rllib(ray), follow this.
 Open it and change the "callbacks" value.
 Replace ```"callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",``` to following blocks.
 
+```shell script
 "callbacks": {
     "on_episode_end": null,
     "on_episode_start": null,
@@ -65,6 +66,7 @@ Replace ```"callbacks":"<class 'ray.rllib.agents.callbacks.DefaultCallbacks'>",`
     "on_sample_end": null,
     "on_train_result": null
   },
+```
 
 After replacing the "callbacks" block, 
 First, ```conda activate flow``` to activate flow environment.
@@ -75,8 +77,8 @@ python ~/flow-autonomous-driving/visualizer_rllib.py
 ```
 
 ## Contributors
-`BMIL in Soongsil Univ.`
-Prof. Kwon (Minhae Kwon)
-Minsoo Kang
-Gihong Lee
+_BMIL in Soongsil Univ._
+Prof. Kwon (Minhae Kwon), 
+Minsoo Kang, 
+Gihong Lee, 
 Hyeonju Lim
