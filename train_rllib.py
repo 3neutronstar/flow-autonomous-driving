@@ -186,20 +186,28 @@ def train_rllib(submodule, flags):
         policy_graphs, policy_mapping_fn, policies_to_train, flags)
 
     ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
+    # checkpoint and num steps setting
+    if alg_run=="PPO":
+        flags.num_steps = 1500
+        checkpoint_freq = 100
+    else if alg_run=="DDPG":
+        flags.num_steps = 200
+        checkpoint_freq = 20
+    
     exp_config = {
         "run": alg_run,
         "env": gym_name,
         "config": {
             **config
         },
-        "checkpoint_freq": 20,
+        "checkpoint_freq": checkpoint_freq,
         "checkpoint_at_end": True,
         "max_failures": 999,
         "stop": {
             "training_iteration": flags.num_steps,
         },
     }
-    print(exp_config["config"]["framework"])
+    print("training_iteration: ",exp_config["stop"]["training_iteration"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     print("=================Configs=================")
@@ -224,6 +232,7 @@ def train_rllib(submodule, flags):
     run_time = stop_time-start_time
     print("Training is Finished")
     print("total runtime: ", run_time)
+    print("restore path: ",flags.checkpoint_path)
 
 
 def main(args):
