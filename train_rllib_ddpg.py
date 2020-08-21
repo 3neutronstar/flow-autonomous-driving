@@ -78,7 +78,7 @@ def setup_exps_rllib(flow_params,
     agent_cls = get_agent_class(alg_run)
     config = deepcopy(agent_cls._default_config)
     config['framework'] = "torch"
-    config['n_step'] = 1
+    config['n_step'] = 5 # The bigger, the more stable
     config["num_workers"] = 1
     # model
     config['actor_hiddens'] = [64, 64]
@@ -89,16 +89,16 @@ def setup_exps_rllib(flow_params,
     config['model']['fcnet_hiddens'] = [64, 64]
     config['lr']=1e-4
     # exploration
-    config['exploration_config']['final_scale'] = 0.02
-    config['exploration_config']['scale_timesteps'] = 100000
+    config['exploration_config']['final_scale'] = 0.05
+    config['exploration_config']['scale_timesteps'] = 540000
     config['exploration_config']['ou_base_scale'] = 0.1
     config['exploration_config']['ou_theta'] = 0.15
     config['exploration_config']['ou_sigma'] = 0.2
     # optimization
     config['tau'] = 0.002
-    config['l2_reg'] = 1e-6
+    config['l2_reg'] = 1e-6# when l2 is big, overfitting will decrease
     config['train_batch_size'] = 64
-    config['learning_starts'] = 3000
+    config['learning_starts'] = 1500
     # evaluation
     #config['evaluation_interval'] = 5
     config['buffer_size'] = 50000
@@ -130,7 +130,7 @@ def setup_exps_rllib(flow_params,
     if policy_graphs is not None:
         print("policy_graphs", policy_graphs)
         config['multiagent'].update({'policies': policy_graphs})
-    if policy_mapping_fn is not None:
+    if policy_mapping_fn is not None:gd
         config['multiagent'].update(
             {'policy_mapping_fn': tune.function(policy_mapping_fn)})
     if policies_to_train is not None:
