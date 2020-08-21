@@ -190,7 +190,7 @@ def train_rllib(submodule, flags):
     if alg_run=="PPO":
         flags.num_steps = 1500
         checkpoint_freq = 100
-    else if alg_run=="DDPG":
+    elif alg_run=="DDPG":
         flags.num_steps = 200
         checkpoint_freq = 20
     
