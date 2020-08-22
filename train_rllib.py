@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,  # iteration
+        '--num_steps', type=int, default=1500,  # iteration ->deprecated
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -77,7 +77,6 @@ def setup_exps_rllib(flow_params,
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework']='torch'
         config["num_workers"] = n_cpus
         config["gamma"] = 0.99  # discount rate
         config["use_gae"] = True  # truncated
@@ -96,11 +95,34 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['framework'] = "torch"
-        config["l2_reg"] = 1e-2  # refer to ddpg paper(7. experiment)
-        # config["tau"] = 0.001 # refer to ddpg paper(7. experiment -> for the soft target updates)
-        config['n_step'] = 5
+        config['n_step'] = 2
+        config["num_workers"] = 1
+        # model
+        config['actor_hiddens'] = [64, 64]
+        config['actor_lr'] = 0.0001  # in article 'ddpg'
+        config['critic_lr'] = 0.0005
+        config['critic_hiddens'] = [64, 64]
+        config['gamma'] = 0.99
+        config['model']['fcnet_hiddens'] = [256, 256]
+        config['lr']=1e-4
+        # exploration
+        config['exploration_config']['final_scale'] = 0.02
+        config['exploration_config']['scale_timesteps'] = 600000
+        config['exploration_config']['ou_base_scale'] = 0.1
+        config['exploration_config']['ou_theta'] = 0.15
+        config['exploration_config']['ou_sigma'] = 0.2
+        # optimization
+        config['tau'] = 0.002
+        config['l2_reg'] = 1e-6
+        config['train_batch_size'] = 64
+        config['learning_starts'] = 1500
+        # evaluation
+        #config['evaluation_interval'] = 5
+        config['buffer_size'] = 50000
+        config['timesteps_per_iteration'] = 3000
     
+    #common config
+    config['framework']='torch'
     config['callbacks'] = {
         "on_episode_end": None,
         "on_episode_start": None,
@@ -157,20 +179,28 @@ def train_rllib(submodule, flags):
         policy_graphs, policy_mapping_fn, policies_to_train, flags)
 
     ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
+    # checkpoint and num steps setting
+    if alg_run=="PPO":
+        flags.num_steps = 1500
+        checkpoint_freq = 100
+    elif alg_run=="DDPG":
+        flags.num_steps = 200
+        checkpoint_freq = 20
+    
     exp_config = {
         "run": alg_run,
         "env": gym_name,
         "config": {
             **config
         },
-        "checkpoint_freq": 20,
+        "checkpoint_freq": checkpoint_freq,
         "checkpoint_at_end": True,
         "max_failures": 999,
         "stop": {
             "training_iteration": flags.num_steps,
         },
     }
-    print(exp_config["config"]["framework"])
+    print("training_iteration: ",exp_config["stop"]["training_iteration"])
     if flags.checkpoint_path is not None:
         exp_config['restore'] = flags.checkpoint_path
     print("=================Configs=================")
@@ -195,6 +225,7 @@ def train_rllib(submodule, flags):
     run_time = stop_time-start_time
     print("Training is Finished")
     print("total runtime: ", run_time)
+    print("restore path: ",flags.checkpoint_path)
 
 
 def main(args):
