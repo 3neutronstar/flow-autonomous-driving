@@ -106,19 +106,15 @@ def setup_exps_rllib(flow_params,
         config['model']['fcnet_hiddens'] = [256, 256]
         config['lr']=1e-4
         # exploration
-<<<<<<< HEAD
         config['exploration_config']['final_scale'] = 0.05
-=======
-        config['exploration_config']['final_scale'] = 0.02
->>>>>>> ed05fea906057da9043b498c581a74cb7cff85d7
-        config['exploration_config']['scale_timesteps'] = 600000
+        config['exploration_config']['scale_timesteps'] = 900000
         config['exploration_config']['ou_base_scale'] = 0.1
         config['exploration_config']['ou_theta'] = 0.15
         config['exploration_config']['ou_sigma'] = 0.2
         # optimization
         config['tau'] = 0.002
         config['l2_reg'] = 1e-6
-        config['train_batch_size'] = 128
+        config['train_batch_size'] = 64
         config['learning_starts'] = 1500
         # evaluation
         #config['evaluation_interval'] = 5
@@ -188,8 +184,8 @@ def train_rllib(submodule, flags):
         flags.num_steps = 1500
         checkpoint_freq = 100
     elif alg_run=="DDPG":
-        flags.num_steps = 200
-        checkpoint_freq = 20
+        flags.num_steps = 300
+        checkpoint_freq = 30
     
     exp_config = {
         "run": alg_run,
