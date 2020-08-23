@@ -110,10 +110,14 @@ def setup_exps_rllib(flow_params,
         config['critic_lr'] = 0.0005
         config['critic_hiddens'] = [64, 64]
         config['gamma'] = 0.99
-        config['model']['fcnet_hiddens'] = [64, 64]
+        config['model']['fcnet_hiddens'] = [256, 256]
         config['lr']=1e-4
         # exploration
+<<<<<<< HEAD
         config['exploration_config']['final_scale'] = 0.05
+=======
+        config['exploration_config']['final_scale'] = 0.02
+>>>>>>> ed05fea906057da9043b498c581a74cb7cff85d7
         config['exploration_config']['scale_timesteps'] = 600000
         config['exploration_config']['ou_base_scale'] = 0.1
         config['exploration_config']['ou_theta'] = 0.15
