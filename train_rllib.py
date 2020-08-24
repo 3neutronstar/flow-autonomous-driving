@@ -102,7 +102,7 @@ def setup_exps_rllib(flow_params,
         config['n_step'] = 1
         config["num_workers"] = 1
         # model
-        config['actor_hiddens'] = [400, 300]
+        config['actor_hiddens'] = [64, 64]
         config['actor_lr'] = 0.0001  # in article 'ddpg'
         config['critic_lr'] = 0.0001
         config['critic_hiddens'] = [64, 64]
@@ -122,7 +122,7 @@ def setup_exps_rllib(flow_params,
         config['learning_starts'] = 3000
         # evaluation
         #config['evaluation_interval'] = 5
-        config['buffer_size'] = 1000000 #3e5
+        config['buffer_size'] = 300000 #3e5
         config['timesteps_per_iteration'] = 3000
     
     #common config
