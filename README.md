@@ -43,7 +43,7 @@ where `EXP_CONFIG` is the name of the experiment configuration file, as located 
 
 If you want to run with options, use
 ```shell script
-    python simulate.py EXP_CONFIG --num_runs n --no_render --gen_emission
+python simulate.py EXP_CONFIG --num_runs n --no_render --gen_emission
 ```
 
 ## OSM - Output (Open Street Map)
