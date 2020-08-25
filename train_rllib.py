@@ -110,7 +110,7 @@ def setup_exps_rllib(flow_params,
         config['model']['fcnet_hiddens'] = [64, 64]
         config['lr']=1e-4
         # exploration
-        config['exploration_config']['final_scale'] = 0.05
+        config['exploration_config']['final_scale'] = 0.02
         config['exploration_config']['scale_timesteps'] = 900000
         config['exploration_config']['ou_base_scale'] = 0.1
         config['exploration_config']['ou_theta'] = 0.15
@@ -118,12 +118,13 @@ def setup_exps_rllib(flow_params,
         # optimization
         config['tau'] = 0.001
         config['l2_reg'] = 1e-6
-        config['train_batch_size'] = 256
+        config['train_batch_size'] = 128
         config['learning_starts'] = 3000
         # evaluation
         #config['evaluation_interval'] = 5
         config['buffer_size'] = 300000 #3e5
         config['timesteps_per_iteration'] = 3000
+        config['prioritized_replay']=False
     
     #common config
     config['framework']='torch'
