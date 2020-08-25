@@ -47,8 +47,7 @@ If you want to run with options, use
 ```
 
 ## OSM - Output (Open Street Map)
-![OSMtest_origin](https://user-images.githubusercontent.com/59332148/91113367-66248480-e6c0-11ea-8267-8dbef04475a5.png)
-![OSMTest_Result](https://user-images.githubusercontent.com/59332148/91113369-66bd1b00-e6c0-11ea-878f-46735d543609.png)
+![OSM_Combined](https://user-images.githubusercontent.com/59332148/91114406-ccaaa200-e6c2-11ea-932b-cfc2f18a6669.png)
 
 [OpenStreetMap]https://www.openstreetmap.org/ 
 If you want to use osm file for making network, _map.osm_ file should **replace** the same name of file in 'Network' directory.
