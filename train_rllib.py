@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
     parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,  # iteration
+        '--num_steps', type=int, default=1500,  # iteration ->deprecated
     )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
@@ -78,24 +78,21 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = n_cpus
-        # config["gamma"] = 0.99  # discount rate - 1
+        # config["gamma"] = 0.99  # discount rate
         # config["use_gae"] = True  # truncated
-        config["lambda"] = 0.97  # truncated value
+        # config["lambda"] = 0.97  # truncated value
         # config["kl_target"] = 0.02  # d_target
-        # # M is default value -->minibatch size (sgd_minibatch_size)
-        # # K epoch with the number of updating theta
         # config["num_sgd_iter"] = 15
-        # # horizon: T train time steps (T time steps fixed-length trajectory)
-        config["sgd_minibatch_size"] = 128
+        # config["sgd_minibatch_size"] = 1024
         # config["clip_param"] = 0.2
-        # config["horizon"] = horizon
-        # config["sgd_minibatch_size"] = 128
-        config['exploration_config']["type"]="GaussianNoise"
-        config['exploration_config']["final_scale"]=0.05
-        config['exploration_config']["initial_scale"]=1.0
-        config['exploration_config']["scale_timesteps"]=100000
-        config['exploration_config']["random_timesteps"]=1000
-        config['exploration_config']["stddev"]=0.1
+        config["horizon"] = horizon
+        config['exploration_config']["final_scale"] = 0.05
+        config['exploration_config']["initial_scale"] = 1.0
+        config['exploration_config']["scale_timesteps"] = 1000000
+        config['exploration_config']["random_timesteps"] = 1000
+        config['exploration_config']["stddev"] = 0.1
+       
+        
 
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
@@ -107,25 +104,25 @@ def setup_exps_rllib(flow_params,
         # model
         config['actor_hiddens'] = [64, 64]
         config['actor_lr'] = 0.0001  # in article 'ddpg'
-        config['critic_lr'] = 0.001
+        config['critic_lr'] = 0.0001
         config['critic_hiddens'] = [64, 64]
         config['gamma'] = 0.99
         config['model']['fcnet_hiddens'] = [64, 64]
         config['lr']=1e-4
         # exploration
-        config['exploration_config']['final_scale'] = 0.02
-        config['exploration_config']['scale_timesteps'] = 100000
+        config['exploration_config']['final_scale'] = 0.05
+        config['exploration_config']['scale_timesteps'] = 900000
         config['exploration_config']['ou_base_scale'] = 0.1
         config['exploration_config']['ou_theta'] = 0.15
         config['exploration_config']['ou_sigma'] = 0.2
         # optimization
-        config['tau'] = 0.002
+        config['tau'] = 0.001
         config['l2_reg'] = 1e-6
-        config['train_batch_size'] = 64
+        config['train_batch_size'] = 256
         config['learning_starts'] = 3000
         # evaluation
         #config['evaluation_interval'] = 5
-        config['buffer_size'] = 50000
+        config['buffer_size'] = 300000 #3e5
         config['timesteps_per_iteration'] = 3000
     
     #common config
@@ -190,9 +187,9 @@ def train_rllib(submodule, flags):
     if alg_run=="PPO":
         flags.num_steps = 1500
         checkpoint_freq = 100
-    else if alg_run=="DDPG":
-        flags.num_steps = 200
-        checkpoint_freq = 20
+    elif alg_run=="DDPG":
+        flags.num_steps = 330
+        checkpoint_freq = 30
     
     exp_config = {
         "run": alg_run,
