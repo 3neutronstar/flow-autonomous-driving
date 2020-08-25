@@ -51,7 +51,7 @@ If you want to run with options, use
 
 [OpenStreetMap]https://www.openstreetmap.org/ 
 
-If you want to use osm file for making network, _map.osm_ file should **replace** the same name of file in 'Network' directory.
+If you want to use osm file for making network, Download from .osm files. After that _map.osm_ file should **replace** the same name of file in 'Network' directory.
 You want to see their results, run this code.
 
 ```shell script
