@@ -45,6 +45,7 @@ If you want to run with options, use
 ```shell script
 python simulate.py EXP_CONFIG --num_runs n --no_render --gen_emission
 ```
+![Figure_Eight Ring](https://user-images.githubusercontent.com/59332148/91126855-f1f9d900-e6df-11ea-96ec-b3a5ee49b917.png)
 
 ## OSM - Output (Open Street Map)
 ![OSM_Combined](https://user-images.githubusercontent.com/59332148/91114406-ccaaa200-e6c2-11ea-932b-cfc2f18a6669.png)
