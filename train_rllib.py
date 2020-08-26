@@ -41,9 +41,6 @@ def parse_args(args):
     parser.add_argument(
         '--num_cpus', type=int, default=1,
     )  # How many CPUs to use
-    parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,  # iteration ->deprecated
-    )  # How many total steps to perform learning over
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
     )  # How many steps are in a training batch.
@@ -55,7 +52,6 @@ def parse_args(args):
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
     return parser.parse_known_args(args)[0]
-# rllib
 
 
 def setup_exps_rllib(flow_params,
