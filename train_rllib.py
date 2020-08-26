@@ -111,12 +111,12 @@ def setup_exps_rllib(flow_params,
         config['lr']=1e-4
         # exploration
         config['exploration_config']['final_scale'] = 0.02
-        config['exploration_config']['scale_timesteps'] = 900000
+        config['exploration_config']['scale_timesteps'] = 1500000
         config['exploration_config']['ou_base_scale'] = 0.1
         config['exploration_config']['ou_theta'] = 0.15
         config['exploration_config']['ou_sigma'] = 0.2
         # optimization
-        config['tau'] = 0.001
+        config['tau'] = 0.003
         config['l2_reg'] = 1e-6
         config['train_batch_size'] = 128
         config['learning_starts'] = 3000
@@ -189,7 +189,7 @@ def train_rllib(submodule, flags):
         flags.num_steps = 1500
         checkpoint_freq = 100
     elif alg_run=="DDPG":
-        flags.num_steps = 330
+        flags.num_steps = 600
         checkpoint_freq = 30
     
     exp_config = {
