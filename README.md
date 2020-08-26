@@ -12,8 +12,9 @@
 ## RL examples
 ### RLlib (for multiagent and single agent)
 
+for PPO(Proximal Policy Optimization) and DDPG(Deep Deterministic Policy Gradient)
 ```shell script
-python train_rllib.py EXP_CONFIG
+python train_rllib.py EXP_CONFIG --algorithm [algorithm]
 ```
 
 where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent` or `exp_configs/rl/multiagent.`
@@ -29,8 +30,7 @@ If you want to visualizing after training by rllib(ray),
 #### PPO (Proximal Policy Optimization)
 
 #### DDPG (Deep Deterministic Policy Gradient)
-![DDPG img test](https://user-images.githubusercontent.com/59332148/91112418-0d53ec80-e6be-11ea-9ba5-40dfce5b9caf.png)
-
+![image (1)](https://user-images.githubusercontent.com/59332148/91368044-00acd100-e843-11ea-88ba-6a3252598f5a.png)
 
 
 ## non-RL examples
