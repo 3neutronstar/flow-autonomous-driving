@@ -28,9 +28,15 @@ If you want to visualizing after training by rllib(ray),
 ```
 ### Results for training Ring Network and Figure-Eight Network
 #### PPO (Proximal Policy Optimization)
+- Right Network
+- Figure-eight Network
+![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png)
+
 
 #### DDPG (Deep Deterministic Policy Gradient)
-![image (1)](https://user-images.githubusercontent.com/59332148/91368044-00acd100-e843-11ea-88ba-6a3252598f5a.png)
+- Ring Network
+![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png)
+
 
 
 ## non-RL examples
