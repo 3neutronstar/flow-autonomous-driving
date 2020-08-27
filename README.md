@@ -29,6 +29,8 @@ If you want to visualizing after training by rllib(ray),
 ### Results for training Ring Network and Figure-Eight Network
 #### PPO (Proximal Policy Optimization)
 - Right Network
+![image](https://user-images.githubusercontent.com/59332148/91409511-78e5b780-e880-11ea-8d57-6f1d3008694a.png)
+
 - Figure-eight Network
 ![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png)
 
