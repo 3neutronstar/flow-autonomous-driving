@@ -74,20 +74,27 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = n_cpus
-        # config["gamma"] = 0.99  # discount rate
-        # config["use_gae"] = True  # truncated
-        # config["lambda"] = 0.97  # truncated value
-        # config["kl_target"] = 0.02  # d_target
-        # config["num_sgd_iter"] = 15
-        # config["sgd_minibatch_size"] = 1024
-        # config["clip_param"] = 0.2
         config["horizon"] = horizon
-        config['exploration_config']["final_scale"] = 0.05
-        config['exploration_config']["initial_scale"] = 1.0
-        config['exploration_config']["scale_timesteps"] = 1000000
-        config['exploration_config']["random_timesteps"] = 1000
-        config['exploration_config']["stddev"] = 0.1
-       
+        
+        if flags.exp_config== 'singleagent_ring':
+            config["gamma"] = 0.99  # discount rate
+            config["use_gae"] = True  # truncated
+            config["lambda"] = 0.97  # truncated value
+            config["kl_target"] = 0.02  # d_target
+            config["num_sgd_iter"] = 15
+            config["sgd_minibatch_size"] = 1024
+            config["clip_param"] = 0.2
+            config['lr']=5e-7
+
+        elif flags.exp_config=='singleagent_figure_eight':
+            config['sgd_minibatch_size']=64
+            #Exploration
+            config['exploration_config']["type"] = "GaussianNoise"
+            config['exploration_config']["initial_scale"] = 1.0
+            config['exploration_config']["final_scale"] = 0.05
+            config['exploration_config']["scale_timesteps"] = 100000
+            config['exploration_config']["random_timesteps"] = 1000
+            config['exploration_config']["stddev"] = 0.1
         
 
     elif flags.algorithm.lower() == "ddpg":
