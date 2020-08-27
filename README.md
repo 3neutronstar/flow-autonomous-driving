@@ -1,7 +1,7 @@
 # flow-autonomous-driving
 
 ### Requirement(Installment)
-
+- Ubuntu 18.04 is recommended. (Window OS is not supported.)
 - anaconda : https://anaconda.com/
 - flow-project : https://github.com/flow-project/flow
 - ray-project(rllib) : https://github.com/ray-project/ray (need at least 0.8.6 is needed)
