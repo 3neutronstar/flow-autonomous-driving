@@ -37,11 +37,14 @@ If you want to visualizing after training by rllib(ray),
 ![image](https://user-images.githubusercontent.com/59332148/91409511-78e5b780-e880-11ea-8d57-6f1d3008694a.png)
 
  Use Stochastic Sampling Exploration method
+ Reward seems to converge in 2300, this result is regarded as success experiment.
 - Figure-eight Network
 ![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png)
 
  Use Gaussian Noise Exploration method
-
+ Reward seems to converge in 19,000, this result is regarded as success experiment.
+ Graph that is represented going back and forward penomenon is normal graph.
+ It means that having failure, and that gives penalty to autonomous vehicle.
 #### DDPG (Deep Deterministic Policy Gradient)
 - Ring Network
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png)
