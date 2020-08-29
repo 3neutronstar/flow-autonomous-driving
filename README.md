@@ -8,9 +8,9 @@
 - pytorch : https://pytorch.org/
 
 ### Documentation for Flow
--English Ver:
+-English Ver: [DocumentPDF]https://drive.google.com/file/d/1NQRoCFgfIh34IJh4p0GqqOWagZh543X2/view?usp=sharing
 
--Korean Ver: 
+-Korean Ver: [DocumentPDF]https://drive.google.com/file/d/1BUStOlq8LRypEmwXfRLD-_Xd04wnmCwL/view?usp=sharing
 
 ## How to Use
 
