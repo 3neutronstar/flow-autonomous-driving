@@ -6,8 +6,13 @@
 - flow-project : https://github.com/flow-project/flow
 - ray-project(rllib) : https://github.com/ray-project/ray (need at least 0.8.6 is needed)
 - pytorch : https://pytorch.org/
-## How to Use
 
+### Documentation for Flow
+-English Ver: [DocumentPDF]https://drive.google.com/file/d/1NQRoCFgfIh34IJh4p0GqqOWagZh543X2/view?usp=sharing
+
+-Korean Ver: [DocumentPDF]https://drive.google.com/file/d/1BUStOlq8LRypEmwXfRLD-_Xd04wnmCwL/view?usp=sharing
+
+## How to Use
 
 ## RL examples
 ### RLlib (for multiagent and single agent)
@@ -32,11 +37,14 @@ If you want to visualizing after training by rllib(ray),
 ![image](https://user-images.githubusercontent.com/59332148/91409511-78e5b780-e880-11ea-8d57-6f1d3008694a.png)
 
  Use Stochastic Sampling Exploration method
+ Reward seems to converge in 2300, this result is regarded as success experiment.
 - Figure-eight Network
 ![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png)
 
  Use Gaussian Noise Exploration method
-
+ Reward seems to converge in 19,000, this result is regarded as success experiment.
+ Graph that is represented going back and forward penomenon is normal graph.
+ It means that having failure, and that gives penalty to autonomous vehicle.
 #### DDPG (Deep Deterministic Policy Gradient)
 - Ring Network
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png)
@@ -74,9 +82,8 @@ After that, If you want to see those output file(XML), you could find in `~/flow
 
 
 
-
 ## Contributors
-_BMIL in Soongsil Univ._
+_BMIL at Soongsil Univ._
 Prof. Kwon (Minhae Kwon), 
 Minsoo Kang, 
 Gihong Lee, 
