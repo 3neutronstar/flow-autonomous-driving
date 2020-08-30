@@ -33,24 +33,29 @@ If you want to visualizing after training by rllib(ray),
 ```
 ### Results for training Ring Network and Figure-Eight Network
 #### PPO (Proximal Policy Optimization)
-- Right Network
+- Ring Network (ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91409511-78e5b780-e880-11ea-8d57-6f1d3008694a.png)
-
+mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)
+mean velocity in 1 AV, 21 Non-AVs system: 4.67m/s (ring length: 260)
  Use Stochastic Sampling Exploration method
  Reward seems to converge in 2300, this result is regarded as success experiment.
 - Figure-eight Network
 ![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png)
-
+mean velocity in 22 Non-AVs system: 4.019m/s (total length: 402)
+mean velocity in 1 AV, 21 Non-AVs system: 6.67m/s (total length: 402)
  Use Gaussian Noise Exploration method
  Reward seems to converge in 19,000, this result is regarded as success experiment.
- Graph that is represented going back and forward penomenon is normal graph.
+ Graph that is represented going back and forward penomenon is normal graph due to its failures.
  It means that having failure, and that gives penalty to autonomous vehicle.
 #### DDPG (Deep Deterministic Policy Gradient)
-- Ring Network
+- Ring Network(ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png)
- 
+ mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)
+ mean velocity in 1 AV, 21 Non-AVs system: 4.81m/s (ring length: 260) 
  Use Ornstein Uhlenbeck Noise Exploration method
-
+ 
+- Figure-eight Network
+will be added
 
 ## non-RL examples
 
