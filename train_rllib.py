@@ -112,32 +112,85 @@ def setup_exps_rllib(flow_params,
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['n_step'] = 1
         config["num_workers"] = 1
         # model
-        config['actor_hiddens'] = [64, 64]
-        config['actor_lr'] = 0.0001  # in article 'ddpg'
-        config['critic_lr'] = 0.0001
-        config['critic_hiddens'] = [64, 64]
-        config['gamma'] = 0.99
-        config['model']['fcnet_hiddens'] = [64, 64]
-        config['lr']=1e-4
-        # exploration
-        config['exploration_config']['final_scale'] = 0.05
-        config['exploration_config']['scale_timesteps'] = 1500000
-        config['exploration_config']['ou_base_scale'] = 0.1
-        config['exploration_config']['ou_theta'] = 0.15
-        config['exploration_config']['ou_sigma'] = 0.2
-        # optimization
-        config['tau'] = 0.002
-        config['l2_reg'] = 1e-6
-        config['train_batch_size'] = 128
-        config['learning_starts'] = 3000
-        # evaluation
-        #config['evaluation_interval'] = 5
-        config['buffer_size'] = 300000 #3e5
-        config['timesteps_per_iteration'] = 3000
-        config['prioritized_replay']=False
+        if flags.exp_config== 'singleagent_ring':
+            config['n_step'] = 1
+            config['actor_hiddens'] = [64, 64]
+            config['actor_lr'] = 0.0001  # in article 'ddpg'
+            config['critic_lr'] = 0.0001
+            config['critic_hiddens'] = [64, 64]
+            config['gamma'] = 0.99
+            config['model']['fcnet_hiddens'] = [64, 64]
+            config['lr']=1e-5
+            # exploration
+            config['exploration_config']['final_scale'] = 0.05
+            config['exploration_config']['scale_timesteps'] = 1500000
+            config['exploration_config']['ou_base_scale'] = 0.1
+            config['exploration_config']['ou_theta'] = 0.15
+            config['exploration_config']['ou_sigma'] = 0.2
+            # optimization
+            config['tau'] = 0.002
+            config['l2_reg'] = 1e-6
+            config['train_batch_size'] = 64
+            config['learning_starts'] = 3000
+            # evaluation
+            #config['evaluation_interval'] = 5
+            config['buffer_size'] = 300000 #3e5
+            config['timesteps_per_iteration'] = 3000
+            config['prioritized_replay']=False
+
+        elif flags.exp_config=='singleagent_figure_eight':
+            config['n_step'] = 1
+            config['actor_hiddens'] = [64, 64]
+            config['actor_lr'] = 0.0001  # in article 'ddpg'
+            config['critic_lr'] = 0.001
+            config['critic_hiddens'] = [64, 64]
+            config['gamma'] = 0.99
+            config['model']['fcnet_hiddens'] = [64, 64]
+            config['lr']=1e-5
+            #exploration
+            config['exploration_config']['final_scale'] = 0.05
+            config['exploration_config']['scale_timesteps'] = 100000
+            config['exploration_config']['ou_base_scale'] = 0.1
+            config['exploration_config']['ou_theta'] = 0.15
+            config['exploration_config']['ou_sigma'] = 0.2
+            # optimization
+            config['tau'] = 0.001
+            config['l2_reg'] = 1e-4
+            config['train_batch_size'] = 256
+            config['learning_starts'] = 3000
+            # evaluation
+            #config['evaluation_interval'] = 5
+            config['buffer_size'] = 100000 #3e5
+            config['timesteps_per_iteration'] = 3000
+            config['prioritized_replay']=True
+        else:# merge
+            config['n_step'] = 1
+            config['actor_hiddens'] = [64, 64]
+            config['actor_lr'] = 0.0001  # in article 'ddpg'
+            config['critic_lr'] = 0.0001
+            config['critic_hiddens'] = [64, 64]
+            config['gamma'] = 0.99
+            config['model']['fcnet_hiddens'] = [64, 64]
+            config['lr']=1e-5
+            # exploration
+            config['exploration_config']['final_scale'] = 0.05
+            config['exploration_config']['scale_timesteps'] = 1500000
+            config['exploration_config']['ou_base_scale'] = 0.1
+            config['exploration_config']['ou_theta'] = 0.15
+            config['exploration_config']['ou_sigma'] = 0.2
+            # optimization
+            config['tau'] = 0.002
+            config['l2_reg'] = 1e-6
+            config['train_batch_size'] = 64
+            config['learning_starts'] = 3000
+            # evaluation
+            #config['evaluation_interval'] = 5
+            config['buffer_size'] = 300000 #3e5
+            config['timesteps_per_iteration'] = 3000
+            config['prioritized_replay']=False
+
     
     #common config
     config['framework']='torch'
