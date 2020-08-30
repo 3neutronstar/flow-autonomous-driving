@@ -46,7 +46,7 @@ Mean velocity in 1 AV, 21 Non-AVs system: 6.67m/s (total length: 402)<br/>
  Use Gaussian Noise Exploration method<br/>
  Reward seems to converge in 19,000, this result is regarded as success experiment.<br/>
  Graph that is represented going back and forward penomenon is normal graph due to its failures.<br/>
- It means that having failure, and that gives penalty to autonomous vehicle.<br/>
+ Having failure gives penalty to autonomous vehicle.<br/>
 #### DDPG (Deep Deterministic Policy Gradient)
 - Ring Network(ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png) <br/>
