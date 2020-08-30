@@ -35,14 +35,14 @@ If you want to visualizing after training by rllib(ray),
 #### PPO (Proximal Policy Optimization)
 - Ring Network (ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91409511-78e5b780-e880-11ea-8d57-6f1d3008694a.png) <br/>
-mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
-mean velocity in 1 AV, 21 Non-AVs system: 4.67m/s (ring length: 260)<br/>
+Mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
+Mean velocity in 1 AV, 21 Non-AVs system: 4.67m/s (ring length: 260)<br/>
  Use Stochastic Sampling Exploration method<br/>
  Reward seems to converge in 2300, this result is regarded as success experiment.
 - Figure-eight Network
 ![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png) <br/>
-mean velocity in 22 Non-AVs system: 4.019m/s (total length: 402)<br/>
-mean velocity in 1 AV, 21 Non-AVs system: 6.67m/s (total length: 402)<br/>
+Mean velocity in 22 Non-AVs system: 4.019m/s (total length: 402)<br/>
+Mean velocity in 1 AV, 21 Non-AVs system: 6.67m/s (total length: 402)<br/>
  Use Gaussian Noise Exploration method<br/>
  Reward seems to converge in 19,000, this result is regarded as success experiment.<br/>
  Graph that is represented going back and forward penomenon is normal graph due to its failures.<br/>
@@ -50,8 +50,8 @@ mean velocity in 1 AV, 21 Non-AVs system: 6.67m/s (total length: 402)<br/>
 #### DDPG (Deep Deterministic Policy Gradient)
 - Ring Network(ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png) <br/>
- mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
- mean velocity in 1 AV, 21 Non-AVs system: 4.81m/s (ring length: 260) <br/>
+ Mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
+ Mean velocity in 1 AV, 21 Non-AVs system: 4.81m/s (ring length: 260) <br/>
  Use Ornstein Uhlenbeck Noise Exploration method<br/>
  
 - Figure-eight Network
