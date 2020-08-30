@@ -41,8 +41,8 @@ Mean velocity in 1 AV, 21 Non-AVs system: 4.67m/s (ring length: 260)<br/>
  Reward seems to converge in 2300, this result is regarded as success experiment.
 - Figure-eight Network
 ![image](https://user-images.githubusercontent.com/59332148/91409219-1ab8d480-e880-11ea-8331-7eabc58afef2.png) <br/>
-Mean velocity in 22 Non-AVs system: 4.019m/s (total length: 402)<br/>
-Mean velocity in 1 AV, 21 Non-AVs system: 6.67m/s (total length: 402)<br/>
+Mean velocity in 14 Non-AVs system: 4.019m/s (total length: 402)<br/>
+Mean velocity in 1 AV, 13 Non-AVs system: 6.67m/s (total length: 402)<br/>
  Use Gaussian Noise Exploration method<br/>
  Reward seems to converge in 19,000, this result is regarded as success experiment.<br/>
  Graph that is represented going back and forward penomenon is normal graph due to its failures.<br/>
