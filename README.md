@@ -36,7 +36,7 @@ If you want to visualizing after training by rllib(ray),
 - Ring Network (ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91409511-78e5b780-e880-11ea-8d57-6f1d3008694a.png) <br/>
 Mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
-Mean velocity in 1 AV, 21 Non-AVs system: 4.67m/s (ring length: 260)<br/>
+Mean velocity in 1 AV, 21 Non-AVs system: 4.67m/s, Mean cumulative reward: 2350 (ring length: 260) <br/>
  Use Stochastic Sampling Exploration method<br/>
  Reward seems to converge in 2300, this result is regarded as success experiment.
 - Figure-eight Network
@@ -51,7 +51,7 @@ Mean velocity in 1 AV, 13 Non-AVs system: 6.67m/s (total length: 402)<br/>
 - Ring Network(ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png) <br/>
  Mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
- Mean velocity in 1 AV, 21 Non-AVs system: 4.78m/s (ring length: 260) <br/>
+ Mean velocity in 1 AV, 21 Non-AVs system: 4.78m/s, Mean cumulative reward: 2410 (ring length: 260) <br/>
  Use Ornstein Uhlenbeck Noise Exploration method<br/>
  
 - Figure-eight Network
