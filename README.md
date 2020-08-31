@@ -51,7 +51,7 @@ Mean velocity in 1 AV, 13 Non-AVs system: 6.67m/s (total length: 402)<br/>
 - Ring Network(ring length 220-270 for training)
 ![image](https://user-images.githubusercontent.com/59332148/91408962-b0079900-e87f-11ea-95b3-020a5809e746.png) <br/>
  Mean velocity in 22 Non-AVs system: 4.22m/s (ring length: 260)<br/>
- Mean velocity in 1 AV, 21 Non-AVs system: 4.81m/s (ring length: 260) <br/>
+ Mean velocity in 1 AV, 21 Non-AVs system: 4.78m/s (ring length: 260) <br/>
  Use Ornstein Uhlenbeck Noise Exploration method<br/>
  
 - Figure-eight Network
