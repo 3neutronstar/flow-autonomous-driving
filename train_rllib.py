@@ -291,7 +291,6 @@ def train_rllib(submodule, flags):
     file_path_day=time.strftime('%Y-%m-%d', time.localtime(time.time()))
     file_path_hour=time.strftime('%H-%M-%S', time.localtime(time.time()))
     experiment_json='experiment_state-'+file_path_day+'_'+file_path_hour+'.json'
-    print(file_path_params_json)
     # print experiment.json information
     print("=========================================")
     run_experiments({flow_params["exp_tag"]: exp_config})
@@ -318,12 +317,16 @@ def train_rllib(submodule, flags):
     
     params_data['explore']=False
     paramStr=params_data["env_config"]["flow_params"]
-    paramStr=paramStr.replace("220","260")
-    paramStr=paramStr.replace("270","260")
+    #fix ring length option
+    if flags.exp_config=="singleagent_ring":
+        paramStr=paramStr.replace("220","260")
+        paramStr=paramStr.replace("270","260")
+
     with open(saved_params_json_path,'w')as fout:
         params_data["env_config"]["flow_params"]=paramStr
         json.dump(params_data,fout,indent="\t")
     print("Visualizing is Now Available")
+    #Done
 
 def main(args):
     """Perform the training operations."""
