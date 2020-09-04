@@ -83,17 +83,16 @@ def setup_exps_rllib(flow_params,
             config["kl_target"] = 0.02  # d_target
             config["num_sgd_iter"] = 15
             config["sgd_minibatch_size"] = 1024
-            config["clip_param"] = 0.2
             config['lr']=5e-7
-            
-        
+            config["clip_param"] = 0.2
 
         elif flags.exp_config=='singleagent_figure_eight':
             config['sgd_minibatch_size']=64
+            config["clip_param"] = 0.2
             #Exploration
             config['exploration_config']["type"] = "GaussianNoise"
             config['exploration_config']["initial_scale"] = 1.0
-            config['exploration_config']["final_scale"] = 0.05
+            config['exploration_config']["final_scale"] = 0.02
             config['exploration_config']["scale_timesteps"] = 1000000
             config['exploration_config']["random_timesteps"] = 1000
             config['exploration_config']["stddev"] = 0.1
@@ -136,22 +135,26 @@ def setup_exps_rllib(flow_params,
             config['n_step'] = 1
             config['actor_hiddens'] = [64, 64]
             config['actor_lr'] = 0.0001  # in article 'ddpg'
-            config['critic_lr'] = 0.0001
+            config['critic_lr'] = 0.001
             config['critic_hiddens'] = [64, 64]
             config['gamma'] = 0.99
             config['model']['fcnet_hiddens'] = [64, 64]
-            config['lr']=1e-5
+            config['lr']=5e-6
             #exploration
             config['exploration_config']['final_scale'] = 0.05
             config['exploration_config']['scale_timesteps'] = 1500000
-            config['exploration_config']['ou_base_scale'] = 0.1
-            config['exploration_config']['ou_theta'] = 0.15
-            config['exploration_config']['ou_sigma'] = 0.2
+            config['exploration_config']["initial_scale"] = 1.0
+            config['exploration_config']["random_timesteps"] = 1000
+            config['exploration_config']["stddev"] = 0.1
+            del config['exploration_config']['ou_base_scale']
+            del config['exploration_config']['ou_theta']
+            del config['exploration_config']['ou_sigma']
+            config['exploration_config']['type']='GaussianNoise'
             # optimization
             config['tau'] = 0.001
             config['l2_reg'] = 1e-3
-            config['train_batch_size'] = 32
-            config['learning_starts'] = 3000
+            config['train_batch_size'] = 64
+            config['learning_starts'] = 1000
             # evaluation
             #config['evaluation_interval'] = 5
             config['buffer_size'] = 100000 #3e5
@@ -282,14 +285,45 @@ def train_rllib(submodule, flags):
                 #    continue
         else:
             print(key, ":", exp_config["config"][key])
+    # change config data at the end of training (need to record time value to fix it)
+    import time
+    time.time()
+    file_path_day=time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    file_path_hour=time.strftime('%H-%M-%S', time.localtime(time.time()))
+    experiment_json='experiment_state-'+file_path_day+'_'+file_path_hour+'.json'
+    print(file_path_params_json)
+    # print experiment.json information
     print("=========================================")
     run_experiments({flow_params["exp_tag"]: exp_config})
     stop_time = timeit.default_timer()
     run_time = stop_time-start_time
     print("Training is Finished")
     print("total runtime: ", run_time)
-    print("restore path: ",flags.checkpoint_path)
-
+    # modify params.json for testing that trained well
+    saved_experiment_json_path=os.path.join("~/ray_results",flow_params["exp_tag"],experiment_json)
+    # check file is existed
+    if int(experiment_json[-6]=="9"):
+        experiment_json[-7]=str(int(experiment_json[-7])+1)
+        experiment_json[-6]="0"
+    else:
+        experiment_json[-6]=str(int(experiment_json[-6])+1)
+    if os.path.exists(os.path.dirname(saved_experiment_json_path)) ==False:
+        saved_experiment_json_path=os.path.join("~/ray_results",flow_params["exp_tag"],experiment_json)
+    with open(saved_experiment_json_path,'r') as f:
+        experiment_data=json.load(f)
+        saved_params_json_path=experiment_data["checkpoints"][0]['logdir']
+    #params.json open and modify value of exploration and ringlength for visualizing
+    with open(saved_params_json_path,'r')as fin:
+        params_data=json.load(fin)
+    
+    params_data['explore']=False
+    paramStr=params_data["env_config"]["flow_params"]
+    paramStr=paramStr.replace("220","260")
+    paramStr=paramStr.replace("270","260")
+    with open(saved_params_json_path,'w')as fout:
+        params_data["env_config"]["flow_params"]=paramStr
+        json.dump(params_data,fout,indent="\t")
+    print("Visualizing is Now Available")
 
 def main(args):
     """Perform the training operations."""
