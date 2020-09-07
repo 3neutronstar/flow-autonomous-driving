@@ -7,6 +7,11 @@
 - ray-project(rllib) : https://github.com/ray-project/ray (need at least 0.8.6 is needed)
 - pytorch : https://pytorch.org/
 
+### Documentation for Flow
+-English Ver: [DocumentPDF]https://drive.google.com/file/d/1NQRoCFgfIh34IJh4p0GqqOWagZh543X2/view?usp=sharing
+
+-Korean Ver: [DocumentPDF]https://drive.google.com/file/d/1BUStOlq8LRypEmwXfRLD-_Xd04wnmCwL/view?usp=sharing
+
 ### How to Download Requirement
 #### Anaconda(Python3) installation:
 - Prerequisites
@@ -20,6 +25,8 @@ bash ~/Downloads/Anaconda3-2020.02-Linux-x86_64.sh
 ```
 We recomment you to running conda init 'yes'.<br/>
 After installation is done, close and open your terminal again.<br/>
+
+
 #### Flow installation
 ```shell script
     git clone https://github.com/flow-project/flow.git
@@ -47,11 +54,15 @@ For checking the SUMO installation,
     conda activate flow
     python simulate.py ring
 ```
-#### Troch installation (Pytorch)
+
+
+#### Torch installation (Pytorch)
 You should install at least 1.6.0 version of torch.(torchvision: 0.7.0)
 ```shell script
 conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 ```
+
+
 #### Ray RLlib installation
 You should install at least 0.8.6 version of Ray.(Recommend 0.8.7)<br/>
 ```shell script
@@ -62,6 +73,8 @@ pip install -U ray==0.8.7
     conda activate flow
     python train_rllib.py singleagent_ring
 ```
+
+
 #### Visualizing with Tensorboard
 To visualize the training progress:<br/>
 ```shell script
@@ -69,10 +82,6 @@ tensorboard --logdir=~/ray_results
 ```
 If tensorboard is not installed, you can install with pip, `pip install tensorboard`.
 
-### Documentation for Flow
--English Ver: [DocumentPDF]https://drive.google.com/file/d/1NQRoCFgfIh34IJh4p0GqqOWagZh543X2/view?usp=sharing
-
--Korean Ver: [DocumentPDF]https://drive.google.com/file/d/1BUStOlq8LRypEmwXfRLD-_Xd04wnmCwL/view?usp=sharing
 
 ## How to Use
 
@@ -85,6 +94,7 @@ python train_rllib.py EXP_CONFIG --algorithm [algorithm]
 ```
 
 where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent` or `exp_configs/rl/multiagent.`
+
 ### Visualizing Training Results
 If you want to visualizing after training by rllib(ray), 
 - First, ```conda activate flow``` to activate flow environment.
