@@ -16,24 +16,26 @@
 - Installation(for x86 Systems)
 In your browser, download the Anaconda installer for Linux (from https://anaconda.com/ )
 ``` shell script
-    bash ~/Downloads/Anaconda3-2020.02-Linux-x86_64.sh
+bash ~/Downloads/Anaconda3-2020.02-Linux-x86_64.sh
 ```
 We recomment you to running conda init 'yes'.<br/>
 After installation is done, close and open your terminal again.<br/>
 #### Flow installation
 ```shell script
-git clone https://github.com/flow-project/flow.git
-cd flow
+    git clone https://github.com/flow-project/flow.git
+    cd flow
 ``` 
 for download Flow github repository.
 We create a conda environment and installing Flow and its dependencies within the enivronment.
 ```shell script
-conda env create -f environment.yml
-conda activate flow
-python setup.py develop
+    conda env create -f environment.yml
+    conda activate flow
+    python setup.py develop
 ```
 For Ubuntu 18.04: This command will install the SUMO for simulation.<br/>
-`scripts/setup_sumo_ubuntu1804.sh` <br/>
+```shell script
+scripts/setup_sumo_ubuntu1804.sh
+```
 For checking the SUMO installation,
 ```shell script
     which sumo
@@ -57,8 +59,8 @@ pip install -U ray==0.8.7
 ```
 - Testing RLlib installation
 ```shell script
-conda activate flow
-python train_rllib.py singleagent_ring
+    conda activate flow
+    python train_rllib.py singleagent_ring
 ```
 #### Visualizing with Tensorboard
 To visualize the training progress:<br/>
