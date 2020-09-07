@@ -28,11 +28,11 @@ After installation is done, close and open your terminal again.<br/>
 
 
 #### Flow installation
+Download Flow github repository.
 ```shell script
     git clone https://github.com/flow-project/flow.git
     cd flow
 ``` 
-for download Flow github repository.
 We create a conda environment and installing Flow and its dependencies within the enivronment.
 ```shell script
     conda env create -f environment.yml
