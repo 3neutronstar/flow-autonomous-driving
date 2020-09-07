@@ -7,6 +7,66 @@
 - ray-project(rllib) : https://github.com/ray-project/ray (need at least 0.8.6 is needed)
 - pytorch : https://pytorch.org/
 
+### How to Download Requirement
+#### Anaconda(Python3) installation:
+- Prerequisites
+```shell script
+    apt-get install libgl1-mesa-glx libegl1-mesa libxrandr2 libxrandr2 libxss1 libxcursor1 libxcomposite1 libasound2 libxi6 libxtst6
+```
+- Installation(for x86 Systems)
+In your browser, download the Anaconda installer for Linux (from https://anaconda.com/ )
+``` shell script
+    bash ~/Downloads/Anaconda3-2020.02-Linux-x86_64.sh
+```
+We recomment you to running conda init 'yes'.<br/>
+After installation is done, close and open your terminal again.<br/>
+#### Flow installation
+```shell script
+git clone https://github.com/flow-project/flow.git
+cd flow
+``` 
+for download Flow github repository.
+We create a conda environment and installing Flow and its dependencies within the enivronment.
+```shell script
+conda env create -f environment.yml
+conda activate flow
+python setup.py develop
+```
+For Ubuntu 18.04: This command will install the SUMO for simulation.<br/>
+`scripts/setup_sumo_ubuntu1804.sh` <br/>
+For checking the SUMO installation,
+```shell script
+    which sumo
+    sumo --version
+    sumo-gui
+```
+- Testing your SUMO and Flow installation
+```shell script
+    conda activate flow
+    python simulate.py ring
+```
+#### Troch installation (Pytorch)
+You should install at least 1.6.0 version of torch.(torchvision: 0.7.0)
+```shell script
+conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
+```
+#### Ray RLlib installation
+You should install at least 0.8.6 version of Ray.(Recommend 0.8.7)<br/>
+```shell script
+pip install -U ray==0.8.7
+```
+- Testing RLlib installation
+```shell script
+conda activate flow
+python train_rllib.py singleagent_ring
+```
+#### Visualizing with Tensorboard
+To visualize the training progress:<br/>
+```shell script
+tensorboard --logdir=~/ray_results
+```
+If tensorboard is not installed, you can install with pip, `pip install tensorboard`.
+
 ### Documentation for Flow
 -English Ver: [DocumentPDF]https://drive.google.com/file/d/1NQRoCFgfIh34IJh4p0GqqOWagZh543X2/view?usp=sharing
 
