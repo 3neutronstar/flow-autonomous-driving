@@ -36,7 +36,7 @@ vehicles.add(
 
 flow_params = dict(
     # name of the experiment
-    exp_tag="stabilizing_the_ring",
+    exp_tag="singleagent_ring",
 
     # name of the flow environment the experiment is running on
     env_name=WaveAttenuationPOEnv,

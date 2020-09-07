@@ -80,7 +80,7 @@ To visualize the training progress:<br/>
 ```shell script
 tensorboard --logdir=~/ray_results
 ```
-If tensorboard is not installed, you can install with pip, `pip install tensorboard`.
+If tensorboard is not installed, you can install with pip, by following command `pip install tensorboard`.
 
 
 ## How to Use
