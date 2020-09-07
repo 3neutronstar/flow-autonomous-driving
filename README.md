@@ -88,12 +88,13 @@ If tensorboard is not installed, you can install with pip, `pip install tensorbo
 ## RL examples
 ### RLlib (for multiagent and single agent)
 
-for PPO(Proximal Policy Optimization) and DDPG(Deep Deterministic Policy Gradient)
+for PPO(Proximal Policy Optimization) and DDPG(Deep Deterministic Policy Gradient) algorithm
 ```shell script
-python train_rllib.py EXP_CONFIG --algorithm [algorithm]
+python train_rllib.py EXP_CONFIG --algorithm [DDPG or PPO]
 ```
 
-where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent` or `exp_configs/rl/multiagent.`
+where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent`.<br/>
+In 'EXP_CONFIG', You can choose 'DDPG' or 'PPO' Algorithm.(Default: PPO)
 
 ### Visualizing Training Results
 If you want to visualizing after training by rllib(ray), 
