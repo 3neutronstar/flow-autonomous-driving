@@ -11,7 +11,7 @@
 #### Anaconda(Python3) installation:
 - Prerequisites
 ```shell script
-    apt-get install libgl1-mesa-glx libegl1-mesa libxrandr2 libxrandr2 libxss1 libxcursor1 libxcomposite1 libasound2 libxi6 libxtst6
+    sudo apt-get install libgl1-mesa-glx libegl1-mesa libxrandr2 libxrandr2 libxss1 libxcursor1 libxcomposite1 libasound2 libxi6 libxtst6
 ```
 - Installation(for x86 Systems)
 In your browser, download the Anaconda installer for Linux (from https://anaconda.com/ )
