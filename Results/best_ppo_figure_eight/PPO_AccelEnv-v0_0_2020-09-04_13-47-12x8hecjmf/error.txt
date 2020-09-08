@@ -1,0 +1,480 @@
+Failure # 1 (occurred at 2020-09-04_14-04-56)
+Traceback (most recent call last):
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trial_runner.py", line 471, in _process_trial
+    result = self.trial_executor.fetch_result(trial)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/ray_trial_executor.py", line 430, in fetch_result
+    result = ray.get(trial_future[0], DEFAULT_GET_TIMEOUT)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/worker.py", line 1538, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(TraCIException): [36mray::PPO.train()[39m (pid=16389, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 519, in train
+    raise e
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 508, in train
+    result = Trainable.train(self)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trainable.py", line 332, in train
+    result = self.step()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 110, in step
+    res = next(self.train_exec_impl)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 758, in __next__
+    return next(self.built_iterator)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 878, in apply_flatten
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 830, in add_wait_hooks
+    item = next(it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 472, in base_iterator
+    yield ray.get(futures, timeout=timeout)
+ray.exceptions.RayTaskError(TraCIException): [36mray::RolloutWorker.par_iter_next()[39m (pid=16391, ip=123.98.177.27)
+  File "/home/minsoo/flow/flow/core/kernel/vehicle/traci.py", line 1120, in add
+    departSpeed=str(speed))
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1427, in add
+    self._connection._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Invalid departLane definition for vehicle 'human_0';
+ must be one of ("random", "free", "allowed", "best", "first", or an int>=0)
+
+During handling of the above exception, another exception occurred:
+
+[36mray::RolloutWorker.par_iter_next()[39m (pid=16391, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 474, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 478, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 1156, in par_iter_next
+    return next(self.local_it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 281, in gen_rollouts
+    yield self.sample()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 563, in sample
+    batches = [self.input_reader.next()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 71, in next
+    batches = [self.get_data()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 181, in get_data
+    item = next(self.rollout_provider)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 536, in _env_runner
+    _use_trajectory_view_api=_use_trajectory_view_api)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 805, in _process_observations
+    env_id)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/base_env.py", line 350, in try_reset
+    return {_DUMMY_AGENT_ID: self.vector_env.reset_at(env_id)}
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/vector_env.py", line 137, in reset_at
+    return self.envs[index].reset()
+  File "/home/minsoo/flow/flow/envs/ring/accel.py", line 177, in reset
+    obs = super().reset()
+  File "/home/minsoo/flow/flow/envs/base.py", line 512, in reset
+    self.k.kernel_api.vehicle.remove(veh_id)  # FIXME: hack
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1435, in remove
+    tc.CMD_SET_VEHICLE_VARIABLE, tc.REMOVE, vehID, reason)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 143, in _sendByteCmd
+    self._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Vehicle 'human_0' is not known
+
+Failure # 2 (occurred at 2020-09-04_14-10-10)
+Traceback (most recent call last):
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trial_runner.py", line 471, in _process_trial
+    result = self.trial_executor.fetch_result(trial)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/ray_trial_executor.py", line 430, in fetch_result
+    result = ray.get(trial_future[0], DEFAULT_GET_TIMEOUT)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/worker.py", line 1538, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(TraCIException): [36mray::PPO.train()[39m (pid=17045, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 519, in train
+    raise e
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 508, in train
+    result = Trainable.train(self)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trainable.py", line 332, in train
+    result = self.step()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 110, in step
+    res = next(self.train_exec_impl)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 758, in __next__
+    return next(self.built_iterator)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 878, in apply_flatten
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 830, in add_wait_hooks
+    item = next(it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 472, in base_iterator
+    yield ray.get(futures, timeout=timeout)
+ray.exceptions.RayTaskError(TraCIException): [36mray::RolloutWorker.par_iter_next()[39m (pid=17068, ip=123.98.177.27)
+  File "/home/minsoo/flow/flow/core/kernel/vehicle/traci.py", line 1120, in add
+    departSpeed=str(speed))
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1427, in add
+    self._connection._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Invalid departLane definition for vehicle 'human_0';
+ must be one of ("random", "free", "allowed", "best", "first", or an int>=0)
+
+During handling of the above exception, another exception occurred:
+
+[36mray::RolloutWorker.par_iter_next()[39m (pid=17068, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 474, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 478, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 1156, in par_iter_next
+    return next(self.local_it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 281, in gen_rollouts
+    yield self.sample()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 563, in sample
+    batches = [self.input_reader.next()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 71, in next
+    batches = [self.get_data()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 181, in get_data
+    item = next(self.rollout_provider)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 536, in _env_runner
+    _use_trajectory_view_api=_use_trajectory_view_api)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 805, in _process_observations
+    env_id)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/base_env.py", line 350, in try_reset
+    return {_DUMMY_AGENT_ID: self.vector_env.reset_at(env_id)}
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/vector_env.py", line 137, in reset_at
+    return self.envs[index].reset()
+  File "/home/minsoo/flow/flow/envs/ring/accel.py", line 177, in reset
+    obs = super().reset()
+  File "/home/minsoo/flow/flow/envs/base.py", line 512, in reset
+    self.k.kernel_api.vehicle.remove(veh_id)  # FIXME: hack
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1435, in remove
+    tc.CMD_SET_VEHICLE_VARIABLE, tc.REMOVE, vehID, reason)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 143, in _sendByteCmd
+    self._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Vehicle 'human_0' is not known
+
+Failure # 3 (occurred at 2020-09-04_14-10-55)
+Traceback (most recent call last):
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trial_runner.py", line 471, in _process_trial
+    result = self.trial_executor.fetch_result(trial)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/ray_trial_executor.py", line 430, in fetch_result
+    result = ray.get(trial_future[0], DEFAULT_GET_TIMEOUT)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/worker.py", line 1538, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(TraCIException): [36mray::PPO.train()[39m (pid=17082, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 519, in train
+    raise e
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 508, in train
+    result = Trainable.train(self)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trainable.py", line 332, in train
+    result = self.step()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 110, in step
+    res = next(self.train_exec_impl)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 758, in __next__
+    return next(self.built_iterator)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 878, in apply_flatten
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 830, in add_wait_hooks
+    item = next(it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 472, in base_iterator
+    yield ray.get(futures, timeout=timeout)
+ray.exceptions.RayTaskError(TraCIException): [36mray::RolloutWorker.par_iter_next()[39m (pid=17070, ip=123.98.177.27)
+  File "/home/minsoo/flow/flow/core/kernel/vehicle/traci.py", line 1120, in add
+    departSpeed=str(speed))
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1427, in add
+    self._connection._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Invalid departLane definition for vehicle 'human_0';
+ must be one of ("random", "free", "allowed", "best", "first", or an int>=0)
+
+During handling of the above exception, another exception occurred:
+
+[36mray::RolloutWorker.par_iter_next()[39m (pid=17070, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 474, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 478, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 1156, in par_iter_next
+    return next(self.local_it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 281, in gen_rollouts
+    yield self.sample()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 563, in sample
+    batches = [self.input_reader.next()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 71, in next
+    batches = [self.get_data()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 181, in get_data
+    item = next(self.rollout_provider)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 536, in _env_runner
+    _use_trajectory_view_api=_use_trajectory_view_api)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 805, in _process_observations
+    env_id)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/base_env.py", line 350, in try_reset
+    return {_DUMMY_AGENT_ID: self.vector_env.reset_at(env_id)}
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/vector_env.py", line 137, in reset_at
+    return self.envs[index].reset()
+  File "/home/minsoo/flow/flow/envs/ring/accel.py", line 177, in reset
+    obs = super().reset()
+  File "/home/minsoo/flow/flow/envs/base.py", line 512, in reset
+    self.k.kernel_api.vehicle.remove(veh_id)  # FIXME: hack
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1435, in remove
+    tc.CMD_SET_VEHICLE_VARIABLE, tc.REMOVE, vehID, reason)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 143, in _sendByteCmd
+    self._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Vehicle 'human_0' is not known
+
+Failure # 4 (occurred at 2020-09-04_14-12-56)
+Traceback (most recent call last):
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trial_runner.py", line 471, in _process_trial
+    result = self.trial_executor.fetch_result(trial)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/ray_trial_executor.py", line 430, in fetch_result
+    result = ray.get(trial_future[0], DEFAULT_GET_TIMEOUT)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/worker.py", line 1538, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(TraCIException): [36mray::PPO.train()[39m (pid=17772, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 519, in train
+    raise e
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 508, in train
+    result = Trainable.train(self)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trainable.py", line 332, in train
+    result = self.step()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 110, in step
+    res = next(self.train_exec_impl)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 758, in __next__
+    return next(self.built_iterator)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 878, in apply_flatten
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 830, in add_wait_hooks
+    item = next(it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 472, in base_iterator
+    yield ray.get(futures, timeout=timeout)
+ray.exceptions.RayTaskError(TraCIException): [36mray::RolloutWorker.par_iter_next()[39m (pid=17829, ip=123.98.177.27)
+  File "/home/minsoo/flow/flow/core/kernel/vehicle/traci.py", line 1120, in add
+    departSpeed=str(speed))
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1427, in add
+    self._connection._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Invalid departLane definition for vehicle 'human_0';
+ must be one of ("random", "free", "allowed", "best", "first", or an int>=0)
+
+During handling of the above exception, another exception occurred:
+
+[36mray::RolloutWorker.par_iter_next()[39m (pid=17829, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 474, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 478, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 1156, in par_iter_next
+    return next(self.local_it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 281, in gen_rollouts
+    yield self.sample()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 563, in sample
+    batches = [self.input_reader.next()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 71, in next
+    batches = [self.get_data()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 181, in get_data
+    item = next(self.rollout_provider)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 536, in _env_runner
+    _use_trajectory_view_api=_use_trajectory_view_api)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 805, in _process_observations
+    env_id)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/base_env.py", line 350, in try_reset
+    return {_DUMMY_AGENT_ID: self.vector_env.reset_at(env_id)}
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/vector_env.py", line 137, in reset_at
+    return self.envs[index].reset()
+  File "/home/minsoo/flow/flow/envs/ring/accel.py", line 177, in reset
+    obs = super().reset()
+  File "/home/minsoo/flow/flow/envs/base.py", line 512, in reset
+    self.k.kernel_api.vehicle.remove(veh_id)  # FIXME: hack
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1435, in remove
+    tc.CMD_SET_VEHICLE_VARIABLE, tc.REMOVE, vehID, reason)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 143, in _sendByteCmd
+    self._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Vehicle 'human_0' is not known
+
+Failure # 5 (occurred at 2020-09-04_17-56-30)
+Traceback (most recent call last):
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trial_runner.py", line 471, in _process_trial
+    result = self.trial_executor.fetch_result(trial)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/ray_trial_executor.py", line 430, in fetch_result
+    result = ray.get(trial_future[0], DEFAULT_GET_TIMEOUT)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/worker.py", line 1538, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(TraCIException): [36mray::PPO.train()[39m (pid=17844, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 519, in train
+    raise e
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 508, in train
+    result = Trainable.train(self)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/tune/trainable.py", line 332, in train
+    result = self.step()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 110, in step
+    res = next(self.train_exec_impl)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 758, in __next__
+    return next(self.built_iterator)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 845, in apply_filter
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 878, in apply_flatten
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 830, in add_wait_hooks
+    item = next(it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 785, in apply_foreach
+    for item in it:
+  [Previous line repeated 1 more time]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 472, in base_iterator
+    yield ray.get(futures, timeout=timeout)
+ray.exceptions.RayTaskError(TraCIException): [36mray::RolloutWorker.par_iter_next()[39m (pid=17830, ip=123.98.177.27)
+  File "/home/minsoo/flow/flow/core/kernel/vehicle/traci.py", line 1120, in add
+    departSpeed=str(speed))
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1427, in add
+    self._connection._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Invalid departLane definition for vehicle 'human_0';
+ must be one of ("random", "free", "allowed", "best", "first", or an int>=0)
+
+During handling of the above exception, another exception occurred:
+
+[36mray::RolloutWorker.par_iter_next()[39m (pid=17830, ip=123.98.177.27)
+  File "python/ray/_raylet.pyx", line 474, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 478, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 479, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 432, in ray._raylet.execute_task.function_executor
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/util/iter.py", line 1156, in par_iter_next
+    return next(self.local_it)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 281, in gen_rollouts
+    yield self.sample()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 563, in sample
+    batches = [self.input_reader.next()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 71, in next
+    batches = [self.get_data()]
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 181, in get_data
+    item = next(self.rollout_provider)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 536, in _env_runner
+    _use_trajectory_view_api=_use_trajectory_view_api)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/evaluation/sampler.py", line 805, in _process_observations
+    env_id)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/base_env.py", line 350, in try_reset
+    return {_DUMMY_AGENT_ID: self.vector_env.reset_at(env_id)}
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/ray/rllib/env/vector_env.py", line 137, in reset_at
+    return self.envs[index].reset()
+  File "/home/minsoo/flow/flow/envs/ring/accel.py", line 177, in reset
+    obs = super().reset()
+  File "/home/minsoo/flow/flow/envs/base.py", line 512, in reset
+    self.k.kernel_api.vehicle.remove(veh_id)  # FIXME: hack
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/_vehicle.py", line 1435, in remove
+    tc.CMD_SET_VEHICLE_VARIABLE, tc.REMOVE, vehID, reason)
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 143, in _sendByteCmd
+    self._sendExact()
+  File "/home/minsoo/anaconda3/envs/flow/lib/python3.7/site-packages/traci/connection.py", line 106, in _sendExact
+    raise TraCIException(err, prefix[1], _RESULTS[prefix[2]])
+traci.exceptions.TraCIException: Vehicle 'human_0' is not known
+
