@@ -40,7 +40,7 @@ def parse_args(args):
     )  # choose algorithm in order to use
     parser.add_argument(
         '--num_cpus', type=int, default=1,
-    )  # How many CPUs to use
+    )  # How many CPUs to usedh r
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
     )  # How many steps are in a training batch.
@@ -115,7 +115,7 @@ def setup_exps_rllib(flow_params,
             config['model']['fcnet_hiddens'] = [64, 64]
             config['lr']=1e-4
             # exploration
-            config['exploration_config']['final_scale'] = 0.05
+            config['exploration_config']['final_scale'] = 0.02
             config['exploration_config']['scale_timesteps'] = 1500000
             config['exploration_config']['ou_base_scale'] = 0.1
             config['exploration_config']['ou_theta'] = 0.15
@@ -301,13 +301,13 @@ def train_rllib(submodule, flags):
     # modify params.json for testing that trained well
     saved_experiment_json_path=os.path.join("~/ray_results",flow_params["exp_tag"],experiment_json)
     # check file is existed
-    if int(experiment_json[-6]=="9"):
-        experiment_json[-7]=str(int(experiment_json[-7])+1)
-        experiment_json[-6]="0"
-    else:
-        experiment_json[-6]=str(int(experiment_json[-6])+1)
     if os.path.exists(os.path.dirname(saved_experiment_json_path)) ==False:
         saved_experiment_json_path=os.path.join("~/ray_results",flow_params["exp_tag"],experiment_json)
+        if int(experiment_json[-6]=="9"):
+            experiment_json[-7]=str(int(experiment_json[-7])+1)
+            experiment_json[-6]="0"
+        else:
+            experiment_json[-6]=str(int(experiment_json[-6])+1)
     with open(saved_experiment_json_path,'r') as f:
         experiment_data=json.load(f)
         saved_params_json_path=experiment_data["checkpoints"][0]['logdir']
