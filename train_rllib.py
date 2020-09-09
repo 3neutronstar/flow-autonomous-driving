@@ -123,7 +123,7 @@ def setup_exps_rllib(flow_params,
             # optimization
             config['tau'] = 0.001
             config['l2_reg'] = 1e-6
-            config['train_batch_size'] = 128
+            config['train_batch_size'] = 64
             config['learning_starts'] = 3000
             # evaluation
             #config['evaluation_interval'] = 5
@@ -301,13 +301,6 @@ def train_rllib(submodule, flags):
     # modify params.json for testing that trained well
     saved_experiment_json_path=os.path.join("~/ray_results",flow_params["exp_tag"],experiment_json)
     # check file is existed
-    if os.path.exists(os.path.dirname(saved_experiment_json_path)) ==False:
-        saved_experiment_json_path=os.path.join("~/ray_results",flow_params["exp_tag"],experiment_json)
-        if int(experiment_json[-6]=="9"):
-            experiment_json[-7]=str(int(experiment_json[-7])+1)
-            experiment_json[-6]="0"
-        else:
-            experiment_json[-6]=str(int(experiment_json[-6])+1)
     with open(saved_experiment_json_path,'r') as f:
         experiment_data=json.load(f)
         saved_params_json_path=experiment_data["checkpoints"][0]['logdir']
